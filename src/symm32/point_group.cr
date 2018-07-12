@@ -1,103 +1,84 @@
 module Symm32
   class PointGroup
-    property family_name : String
-    property name : String
-    property isometries
-    getter requirements
-    # Cardinality: hash of number of each kind of isometry
-    # {IsometryKind::Mirror: 3, IsometryKind::Rotation: 1, etc.}
-    getter cardinality : Hash(IsometryKind, Int8)
+
+    include Cardinality
+    alias DirectionHash = Hash(Directions::Direction, Array(IsometryKind))
+
+    @cardinality = IsometryCardinality.new
+    @direction_hash = DirectionHash.new
+    JSON.mapping(
+      family: { type: String, setter: false },
+      name: { type: String, setter: false },
+      isometries: {type: Array(Isometry), setter: false}
+    )
+
+    getter direction_hash : DirectionHash
 
     # Create new point group object from array of isometry strings
     # the format of these strings is important and specified in isometry.cr
-    def initialize(@family_name, @name, isometry_arr)
-      @isometries = [] of Isometry
-      isometry_arr.each do |isometry_name|
-        @isometries << Isometry.new(isometry_name)
-      end
-      @requirements = Requirements.new(@isometries)
-      @cardinality = init_cardinality
-    end
-
-    # isometries as simple strings instead of objects
-    def isometry_names
-      isometries.map { |i| i.name  }
+    def initialize(pull : JSON::PullParser)
+      previous_def
+      @cardinality = compute_cardinality
+      @direction_hash = init_direction_hash
     end
 
     # Determine if this group is a subgroup of the one passed in
-    def subgroup?(parent_group : PointGroup)
-      RelationshipResolver.subgroup?(self, parent_group)
-    end
-
-    # Determine if this group is a super of the one passed in
-    def supergroup?(child_group : PointGroup)
-      RelationshipResolver.supergroup?(self, child_group)
+    def orientations_within(parent_group : PointGroup)
+      return false unless has_min_cardinality?(parent.isometries)
+      calculate_orientations(parent_group)
     end
 
     # Determine if the passed in array of isometries
     # meets the requirements of the group.
-    def ==(subgroup : Array(Isometry))
-      equiv(subgroup)
-    end
-
-    # Number and names of species where other is a subgroup of self
-    # Returns Hash of count, for example
-    # [self is 4/mmm] species("mm2")
-    # {"mm2|" => 2, "mm2_" => 4} etc
-    def species(other : PointGroup)
-      res = {} of String => Int32
-      subgroups = RelationshipResolver.resolve_subgroups(other, self)
-      species_arr = subgroups.map { |sub| subgroup_to_species(sub, other) } # [mm2|, mm2|, mm2_, mm2_, mm2_, mm2_]
-      species_arr.group_by { |e| e }.map { |k, v|  res[k] = v.size }
-      return res
-    end
-
-    # non-binary equivalence operator, let's you decide if you want to
-    # do the cardinality check. Internal methods sometimes do it earlier
-    # so it may be wasteful to do it again.
-    def equiv(subgroup : Array(Isometry), check=true)
-      return false if check && !cardinality_ok?(subgroup)
-      return false if subgroup.uniq.size != subgroup.size # no dupes
-      own_names = @isometries.map { |i| i.name }
-      needs_checked = subgroup.reject { |iso| iso.inverse? || iso.identity? } # cardinality covers these
+    def ==(isoArray : Array(Isometry))
+      return false if isoArray.uniq.size != isoArray.size # no dupes
+      return false unless cardinality_match?(isoArray)
+      # cardinality covers these
+      needs_checked = isoArray.reject { |iso| iso.inverse? || iso.identity? }
+      # now we'll pass on the array of isometries to the requirements checker
       @requirements.meets?(needs_checked)
     end
 
-    # Other point group can be a subgroup of this group
-    # based on cardinality of kinds alone. i.e. it must
-    # have the right number of each kind
-    def cardinality_ok?(other : PointGroup)
-      cardinality_ok?(other.isometries)
-    end
+    # Calculate all orientations of this group within the parent
+    # returns an array of "direction" strings
+    def calculate_orientations(parent_group)
+      orientations = [] of Orientation
+      # z_hash: IsometryKinds in z direction
+      z_hash = direction_hash.select{ |d, _|d.orientation == Orientation::Z}
+      z_kinds = z_hash.first_value
+      # plane_cardinality = cardinality of isometries for all directions in T plane
+      plane_hash = direction_hash.select { |d, _| d.class == Directions::Plane }
+      plane_cardinality = compute_cardinality(plane_hash.values.flatten)
 
-    # Determine name of "subspecies" this subgroup would be based on
-    # relation to the group.
-    private def subgroup_to_species(subgroup, other)
-      # First lets just think of axial groups. So in the parent group we have z and in the subgroup
-      # we'll have the z elements still in z or not. So we return the name of the subgroup with a | or _ to indicate
-      axis_elements = subgroup.select(&.axis?)
-      meets? = other.requirements.axis_requirement.met_by?(axis_elements)
-      meets? ? other.name + "|" : other.name + "_"
-    end
-
-    private def cardinality_ok?(other : Array(Isometry))
-      own_kinds = [] of String
-      @isometries.map do |i|
-        count = own_kinds.count{ |kind| kind[0].to_s == i.kind }
-        own_kinds <<  i.kind + count.to_s
+      # main loop
+      parent_group.direction_hash.each do |direction, iso_kinds|
+        # find axes in parent where my z-axis could go
+        next unless (z_kinds - iso_kinds).empty?
+        # for this axis, check if orthogonal plane has correct cardinality
+        iso_arr = [] of Isometry
+        direction.orthogonals.each do |orientation|
+          iso_arr.concat parent_group.isometries_for_orientation(orientation)
+        end
+        parent_cardinality = compute_cardinality(iso_arr)
+        next unless has_min_cardinality?(plane_cardinality, parent_cardinality)
+        orientations << direction.orientation
       end
-
-      other_kinds = [] of String
-      other.map do |i|
-        count = other_kinds.count{ |kind| kind[0].to_s == i.kind }
-        other_kinds <<  i.kind + count.to_s
-      end
-      (other_kinds - own_kinds).empty?
+      orientations
     end
 
-    private def init_cardinality
-      by_kind = @isometries.group_by { |iso| iso.kind }
-      return by_kind.map { |k, v| [k, v.size] }
+    # Directions Hash: hash of isometries in each direction (so, no identity or inverse)
+    # example for 2/m
+    #
+    # {
+    #   <Direction::Axial:0x563ef29e0fe0> => [
+    #     IsometryKind::Rotation2,
+    #     IsometryKind::Mirror
+    # ]}
+    private def init_direction_hash
+      by_direction = @isometries.group_by { |iso| iso.direction }
+      return by_direction.compact_map do |dir, iso_arr|
+        {dir, iso_arr.map(&.kind)} if dir
+      end.to_h
     end
   end
 end

@@ -59,7 +59,7 @@ module Symm32
     def met_by?(direction, other : Array(Isometry))
       return true if @spacing.empty?
       in_plane = other.select { |iso| iso.in_plane?(direction) }
-
+      # TODO cardinality check?
       return false if !cardinality_ok?(in_plane)
       spacing_ok?(in_plane)
     end
@@ -75,11 +75,6 @@ module Symm32
       end
     end
 
-    # Check that cardinality of the proposed plane elements is exactly the same
-    # as those in @kinds
-    private def cardinality_ok?(other)
-      other.map { |iso| iso.kind }.sort == @kinds
-    end
     # find smallest angle in plane, ensure that it's equal to spacing
     # if it's equal to the spacing then we are set since the cardinality
     # requirement guarantees that they will be evenly distributed. I think...

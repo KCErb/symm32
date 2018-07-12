@@ -35,3 +35,9 @@ TODO: Write development instructions here
 ## Contributors
 
 - [your-github-user](https://github.com/your-github-user) KC Erb - creator, maintainer
+
+## Notes
+
+* Point groups look at possible parents rather than possible children. Computationally these aren't importantly different, but from a design standpoint a child has <= members of the parent, so in either case the child must be iterated over. It is better to iterate over "self" than "stranger" so all symmetric resolvers actually operate in  the child->parent direction.
+
+For example, point groups have a determine subgroup and determine supergroup method. The determine supergroup method just calls determine subgroup under the hood with the roles reversed.

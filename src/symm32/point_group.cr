@@ -1,84 +1,92 @@
 module Symm32
   class PointGroup
-
-    include Cardinality
-    alias DirectionHash = Hash(Directions::Direction, Array(IsometryKind))
-
-    @cardinality = IsometryCardinality.new
-    @direction_hash = DirectionHash.new
+    include Cardinality(PointGroup)
+    @directions = Array(Direction).new
+    @family = CrystalFamily.new
     JSON.mapping(
-      family: { type: String, setter: false },
-      name: { type: String, setter: false },
+      name: {type: String, setter: false},
       isometries: {type: Array(Isometry), setter: false}
     )
 
-    getter direction_hash : DirectionHash
+    getter directions
+    getter family : CrystalFamily
 
     # Create new point group object from array of isometry strings
     # the format of these strings is important and specified in isometry.cr
     def initialize(pull : JSON::PullParser)
       previous_def
-      @cardinality = compute_cardinality
-      @direction_hash = init_direction_hash
+      @cardinality = init_cardinality
+      @directions = init_directions
+    end
+
+    # some things we can't init until we have a family which we don't have until
+    # after initialization, see the root symm32.cr
+    # so we put it here in the setter.
+    def family=(fam : CrystalFamily)
+      fam.classify_directions(self)
+      @family = fam
     end
 
     # Determine if this group is a subgroup of the one passed in
-    def orientations_within(parent_group : PointGroup)
-      return false unless has_min_cardinality?(parent.isometries)
-      calculate_orientations(parent_group)
+    def orientations_within(parent : PointGroup)
+      factory = OrientationFactory.new(self, parent)
+      factory.calculate_orientations
     end
 
-    # Determine if the passed in array of isometries
-    # meets the requirements of the group.
-    def ==(isoArray : Array(Isometry))
-      return false if isoArray.uniq.size != isoArray.size # no dupes
-      return false unless cardinality_match?(isoArray)
-      # cardinality covers these
-      needs_checked = isoArray.reject { |iso| iso.inverse? || iso.identity? }
-      # now we'll pass on the array of isometries to the requirements checker
-      @requirements.meets?(needs_checked)
+    def plane
+      directions_perp_to(Axis::Z)
     end
 
-    # Calculate all orientations of this group within the parent
-    # returns an array of "direction" strings
-    def calculate_orientations(parent_group)
-      orientations = [] of Orientation
-      # z_hash: IsometryKinds in z direction
-      z_hash = direction_hash.select{ |d, _|d.orientation == Orientation::Z}
-      z_kinds = z_hash.first_value
-      # plane_cardinality = cardinality of isometries for all directions in T plane
-      plane_hash = direction_hash.select { |d, _| d.class == Directions::Plane }
-      plane_cardinality = compute_cardinality(plane_hash.values.flatten)
+    def edges
+      select_directions([Axis::E1, Axis::E2, Axis::E3, Axis::E4])
+    end
 
-      # main loop
-      parent_group.direction_hash.each do |direction, iso_kinds|
-        # find axes in parent where my z-axis could go
-        next unless (z_kinds - iso_kinds).empty?
-        # for this axis, check if orthogonal plane has correct cardinality
-        iso_arr = [] of Isometry
-        direction.orthogonals.each do |orientation|
-          iso_arr.concat parent_group.isometries_for_orientation(orientation)
-        end
-        parent_cardinality = compute_cardinality(iso_arr)
-        next unless has_min_cardinality?(plane_cardinality, parent_cardinality)
-        orientations << direction.orientation
+    def diags
+      select_directions([Axis::D1, Axis::D2, Axis::D3, Axis::D4])
+    end
+
+    # get array of isometries in given axis
+    def select_direction(axis : Axis)
+      directions.find { |d| d.axis == axis }
+    end
+
+    # find the first direction that is parallel to coords
+    def select_direction(coords : Vector3)
+      directions.find do |dir|
+        next if dir.axis == Axis::None
+        dir.axis.cartesian.cross(coords).zero?
       end
-      orientations
     end
 
-    # Directions Hash: hash of isometries in each direction (so, no identity or inverse)
-    # example for 2/m
-    #
-    # {
-    #   <Direction::Axial:0x563ef29e0fe0> => [
-    #     IsometryKind::Rotation2,
-    #     IsometryKind::Mirror
-    # ]}
-    private def init_direction_hash
-      by_direction = @isometries.group_by { |iso| iso.direction }
-      return by_direction.compact_map do |dir, iso_arr|
-        {dir, iso_arr.map(&.kind)} if dir
-      end.to_h
+    # array of directions on axes
+    def select_directions(axes)
+      directions.select { |d| axes.includes?(d.axis) }
+    end
+
+    # get array of isometries perpendicular to direction
+    def directions_perp_to(axis)
+      plane = axis.orthogonal
+      res = directions.select { |d| plane.includes?(d.axis) }
+      # sort according to axis order
+      res.sort_by { |d| plane.index(d.axis).not_nil! }
+    end
+
+    # Ex: if own axis is t0 and relative axis is t0, then that means
+    # I want to treat my own t0 as z, and then find the t0 axis in that
+    # context. The answer depends on the group but in general this is specifying
+    # a group of directions that could fit the bill.
+    def relative_directions(own_axis : Axis, relative_axis : Axis)
+      polar = relative_axis.spherical[1]
+      axes = own_axis.axes_at_angle(polar)
+      select_directions(axes)
+    end
+
+    private def init_directions
+      by_axis = isometries.group_by { |iso| iso.axis }
+      dirs = by_axis.compact_map do |axis, iso_arr|
+        Direction.new(axis, iso_arr)
+      end
+      dirs.sort_by(&.axis)
     end
   end
 end

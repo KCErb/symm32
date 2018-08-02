@@ -1,10 +1,7 @@
 module Symm32
-  class Isometry
-
-    getter bar : Bool
+  struct Isometry
     getter kind : IsometryKind
-    getter direction : Directions::Direction | Nil
-    getter power : UInt8
+    getter axis : Axis
 
     # Name format of isometry example (-3d2^2):
     # -3d2^2
@@ -28,29 +25,22 @@ module Symm32
     # quite rigidly specified
     def initialize(pull : JSON::PullParser)
       nameString = pull.read_string
-      @bar = nameString[0] == '-'
-      nameString = nameString.lchop if @bar
-
-      @kind = init_kind(nameString)
-
-      # parse direction and power
-      name_parts = nameString.partition("^")
-      @direction = init_direction(name_parts[0])
-      @power = name_parts[2].to_u8? || 1_u8
+      kind, _, power = nameString.partition("^")
+      bar = kind[0] == '-'
+      @axis = init_axis(kind, bar)
+      power = power.to_u8? || 1_u8
+      @kind = init_kind(kind, power, bar)
     end
 
-    def plane_angle
-      return nil unless direction && direction.orientation.is_a?(Directions::Plane)
-      direction.orientation.angle
-    end
+    def initialize(@kind, @axis); end
 
     # calculate angle between self and other isometry
     def angle_from(other)
       return nil unless direction && other.direction
       theta_1, phi_1 = other.spherical_coords
       theta_2, phi_2 = spherical_coords
-      phi_diff = (phi_2-phi_1)/2
-      lambda_diff = (theta_2-theta_1)/2
+      phi_diff = (phi_2 - phi_1)/2
+      lambda_diff = (theta_2 - theta_1)/2
       2*Math.asin(
         Math.sqrt(
           Math.sin(phi_diff)**2 +
@@ -61,12 +51,11 @@ module Symm32
 
     def spherical_coords
       return nil unless direction
-      direction.orientation.spherical
+      direction.axis.spherical
     end
 
-    private def init_kind(nameString)
-      kind_string = nameString[0].to_s
-      kind_string = "-" + kind_string if @bar
+    private def init_kind(kind, power, bar)
+      kind_string = kind[0] == '-' ? kind[0, 2] : kind[0, 1]
       case kind_string
       when "e"
         IsometryKind::Identity
@@ -75,39 +64,31 @@ module Symm32
       when "m"
         IsometryKind::Mirror
       when /^-?\d+/
-        init_rotation_kind(kind_string)
+        init_rotation_kind(kind_string, power, bar)
       else
-        raise "Unable to create Isometry for #{nameString}: not able to determine kind."
+        raise "Unable to create Isometry for #{kind}: not able to determine kind."
       end
     end
 
     # 2, 3, 4, 6 or -2, -3, -4, -6
-    private def init_rotation_kind(kind_string)
-      improper = kind_string[0] == '-' ? "Improper" : nil
+    private def init_rotation_kind(kind_string, power, bar)
+      improper = bar ? "Improper" : nil
       n_fold = kind_string[-1]
-      IsometryKind.parse("#{improper}Rotation#{n_fold}")
+      kind_enum = "#{improper}Rotation#{n_fold}"
+      kind_enum += "_#{power}" if power != 1_u8
+      IsometryKind.parse(kind_enum)
     end
 
-    # dir is special string like mt30, 3d4, mz, or just i
-    private def init_direction(direction)
-      direction = direction.lchop # remove kind (m, 3, e, i)
-      return nil if direction == "" # e and i have no direction
+    private def init_axis(direction, bar)
+      # remove kind => mt30 => t30, -4z => z
+      direction = bar ? direction[2..-1] : direction[1..-1]
+      return Axis::None if direction == "" # e and i have no axis
 
       dir_char = direction[0]
-      # z has only one instance
-      return Directions::Axial.instance if dir_char == 'z'
+      return Axis::Z if dir_char == 'z'
 
       arg = direction.lchop.to_u8
-      case dir_char
-      when 't'
-        Directions::Plane.instance(arg)
-      when 'd'
-        Directions::Diagonal.instance(arg)
-      when 'e'
-        Directions::Edge.instance(arg)
-      else
-        raise "Invalid direction for isometry: `#{direction}`"
-      end
+      Axis.parse("#{dir_char}#{arg}")
     end
   end
 end

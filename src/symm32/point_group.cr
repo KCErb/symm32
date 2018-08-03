@@ -29,6 +29,10 @@ module Symm32
 
     # Determine if this group is a subgroup of the one passed in
     def orientations_within(parent : PointGroup)
+      if family.name == "dummy" || parent.family.name == "dummy"
+        raise %q{Cannot calculate orientations without family information.
+          This method must not be called from or on point groups in isolation."}
+      end
       factory = OrientationFactory.new(self, parent)
       factory.calculate_orientations
     end
@@ -69,16 +73,6 @@ module Symm32
       res = directions.select { |d| plane.includes?(d.axis) }
       # sort according to axis order
       res.sort_by { |d| plane.index(d.axis).not_nil! }
-    end
-
-    # Ex: if own axis is t0 and relative axis is t0, then that means
-    # I want to treat my own t0 as z, and then find the t0 axis in that
-    # context. The answer depends on the group but in general this is specifying
-    # a group of directions that could fit the bill.
-    def relative_directions(own_axis : Axis, relative_axis : Axis)
-      polar = relative_axis.spherical[1]
-      axes = own_axis.axes_at_angle(polar)
-      select_directions(axes)
     end
 
     private def init_directions

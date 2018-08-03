@@ -13,8 +13,6 @@ module Symm32
       Cardinality.compute_cardinality(@isometries)
     end
 
-    # count number of ways that one can fit into the other, there's an assumption
-    # that there is only one answer to this
     def count_fits(other : T)
       Cardinality.count_fits(self.cardinality, other.cardinality)
     end
@@ -30,7 +28,6 @@ module Symm32
     # CLASS METHODS
     # these take two arguments so we treat them as module methods
     # not sure about this pattern to be honest ...
-
     def self.compute_cardinality(isometries : Array(Isometry))
       by_kind = isometries.group_by { |iso| iso.kind }
       by_kind.map { |k, v| {k, v.size.to_u8} }.to_h
@@ -43,6 +40,9 @@ module Symm32
       count_fits(child_card, parent_card)
     end
 
+    # count number of ways that child can fit into the parent, there's an assumption
+    # here that there is only one answer to this, thus the uniq! and counts[0] at the
+    # end here
     def self.count_fits(child_card : IsometryCardinality, parent_card : IsometryCardinality)
       return 1_u8 if child_card.empty?
       counts = child_card.map do |kind, count|

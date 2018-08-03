@@ -55,14 +55,6 @@ module Symm32
       Math.acos(cth)
     end
 
-    def axes_at_angle(angle)
-      other_axes = self.class.values - [self]
-      other_axes.select do |axis|
-        diff = (angle_from(axis) - angle).abs
-        diff.round(Float64::DIGITS).zero?
-      end
-    end
-
     # Cartesian representation of this axis
     def cartesian
       tuple = case
@@ -108,7 +100,7 @@ module Symm32
     # for this axis
     def spherical
       tuple = if (cartesian.zero?)
-        cartesian
+        cartesian.values
       elsif (planar?)
         {1.0, Math::PI / 2.0, angle}
       else

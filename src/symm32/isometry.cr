@@ -6,7 +6,7 @@ module Symm32
     # Name format of isometry example (-3d2^2):
     # -3d2^2
     # ^^^^^^
-    # 123.4.
+    # 1233^4
     # 1 - minus sign indicates invert after performing operation (bar)
     # 2 - kind of isometry:
     #   e - identity,

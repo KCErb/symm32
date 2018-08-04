@@ -40,19 +40,21 @@ module Symm32
       count_fits(child_card, parent_card)
     end
 
-    # count number of ways that child can fit into the parent, there's an assumption
-    # here that there is only one answer to this, thus the uniq! and counts[0] at the
-    # end here
+    # Counts number of ways that child can fit into the parent
+    # This is determined by ignoring the None fit and then using the smallest
+    # number when dividing parent/child for each kind. i.e. it is the max fit where all
+    # of child get a different element in parent
     def self.count_fits(child_card : IsometryCardinality, parent_card : IsometryCardinality)
       return 1_u8 if child_card.empty?
-      counts = child_card.map do |kind, count|
+      counts = child_card.compact_map do |kind, count|
+        next if kind == IsometryKind::Identity || kind == IsometryKind::Inversion
         if parent_card[kind]? && parent_card[kind] >= count
           parent_card[kind] / count
         else
           return 0_u8
         end
       end
-      counts.uniq!
+      counts.sort!
       counts.size > 0 ? counts[0] : 0_u8
     end
 

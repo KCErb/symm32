@@ -1,50 +1,56 @@
 require "../spec_helper"
 
-class Foo
-  include Symm32::Cardinality(Foo)
-  @isometries : Array(Symm32::Isometry)
+module Symm32
+  class Foo
+    include Cardinality(Foo)
+    getter isometries : Array(Isometry)
 
-  def initialize
-    iso1 = Symm32::Isometry.new(Symm32::IsometryKind::Mirror, Symm32::Axis::Z)
-    iso2 = Symm32::Isometry.new(Symm32::IsometryKind::Rotation2, Symm32::Axis::T0)
-    iso3 = Symm32::Isometry.new(Symm32::IsometryKind::Mirror, Symm32::Axis::T90)
-    @isometries = [iso1, iso2, iso3]
-    @cardinality = init_cardinality
-  end
-end
-
-foo_test = Foo.new
-
-describe "Class that includes Cardinality" do
-  it "computes cardinality correctly" do
-    foo_test.cardinality[Symm32::IsometryKind::Mirror].should eq 2
-    foo_test.cardinality[Symm32::IsometryKind::Rotation2].should eq 1
+    def initialize(@isometries)
+      @cardinality = init_cardinality
+    end
   end
 
-  pending "#fits_within when true" do
-  end
-  pending "#fits_within when false" do
-  end
-end
+  foo1 = Foo.new(ISOMETRIES1)
+  foo2 = Foo.new(ISOMETRIES2)
+  foo3 = Foo.new(ISOMETRIES3)
 
-describe Symm32::Cardinality do
-  pending "computes cardinality of isometry array" do
-  end
-
-  describe "#count_fits" do
-    pending "has 1 fit when child is empty" do
+  describe "Class that includes Cardinality" do
+    it "computes cardinality correctly" do
+      foo1.cardinality[IsometryKind::Mirror].should eq 2
+      foo2.cardinality[IsometryKind::Mirror].should eq 1
     end
 
-    pending "has 0 fits when child does not fit" do
+    it "#fits_within when true" do
+      foo2.fits_within?(foo1).should be_true
     end
 
-    pending "has 1 fit when child fits one way" do
+    it "#fits_within when false" do
+      foo1.fits_within?(foo2).should be_false
     end
+  end
 
-    pending "has 2 fits when child fits two ways" do
-    end
+  describe Cardinality do
+    describe "#count_fits" do
+      it "has 1 fit when child is empty" do
+        empty = Hash(IsometryKind, UInt8).new
+        Cardinality.count_fits(empty, foo2.cardinality).should eq 1
+      end
 
-    pending "flattens arrays of isometries and computes on them too" do
+      it "has 0 fits when child does not fit" do
+        Cardinality.count_fits(foo1.cardinality, foo2.cardinality).should eq 0
+      end
+
+      it "has 1 fit when child fits one way" do
+        Cardinality.count_fits(foo3.cardinality, foo2.cardinality).should eq 1
+      end
+
+      it "has 2 fits when child fits two ways" do
+        Cardinality.count_fits(foo2.cardinality, foo1.cardinality).should eq 2
+      end
+
+      it "flattens arrays of isometries and computes on them too" do
+        Cardinality.count_fits_arr([foo2, foo3], [foo1]).should eq 1
+      end
     end
   end
 end

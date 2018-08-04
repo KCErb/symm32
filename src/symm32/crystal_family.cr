@@ -28,9 +28,7 @@ module Symm32
 
     # see note in README, this is hard-coded with prior knowledge instead of generalized
     def classify_directions(point_group : PointGroup)
-      if (name == "orthorhombic")
-        # classify_orthorhombic(point_group.directions, point_group.name)
-      elsif (name == "tetragonal" || name == "hexagonal")
+      if (name == "tetragonal" || name == "hexagonal")
         classify_axial(point_group.directions)
       elsif (name == "cubic")
         classify_cubic(point_group.directions)

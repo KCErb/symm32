@@ -8,7 +8,7 @@ module Symm32
 
     getter axis : Axis
     getter flag : IsometryKind
-    property isometries : Array(Isometry)
+    getter isometries : Array(Isometry)
     property classification : CrystalFamily::Classification
 
     def initialize(@axis, @isometries)

@@ -47,7 +47,6 @@ module Symm32
 
     private def classify_axial(directions)
       directions.each do |dir|
-        next dir.classification = Classification::None if dir.axis.none?
         is_axial = dir.axis.z?
         dir.classification = is_axial ? Classification::Axial : Classification::Planar
       end
@@ -55,7 +54,6 @@ module Symm32
 
     private def classify_cubic(directions)
       directions.each do |dir|
-        next dir.classification = Classification::None if dir.axis.none?
         on = [Axis::Z, Axis::T0, Axis::T90].includes?(dir.axis)
         dir.classification = on ? Classification::OnAxes : Classification::OffAxes
       end

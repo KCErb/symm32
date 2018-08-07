@@ -2,24 +2,29 @@ module Symm32
   class Orientation
     getter child : PointGroup
     getter parent : PointGroup
-    getter z_map = Hash(Direction, Direction).new
+    # parent may not have any direction since directions have axes
+    @parent_direction : Direction | Nil
 
     # map of child direction to parent direction, i.e. map[z]
     # would give you the direction in the parent that the child's z
     # is embedded in, in this orientation
-    property map : Hash(Direction, Direction)
+    property map = Hash(Direction, Direction).new
 
     # A little flag for marking orientations as bad, used by the factory
     # to help toss out an orientation that fails checks
     property? valid = true
 
-    def initialize(@child, child_z_direction, @parent, parent_direction)
-      @z_map[child_z_direction] = parent_direction
-      @map = @z_map.clone
+    def initialize(@child, @parent, parent_direction=nil)
+      @parent_direction = parent_direction
+      if parent_direction
+        child_z_direction = child.select_direction(Axis::Z)
+        @map[child_z_direction] = parent_direction if parent_direction && child_z_direction
+      end
     end
 
     def parent_classification
-      z_map.first_value.classification
+      parent_dir = @parent_direction
+      parent_dir ? parent_dir.classification : CrystalFamily::Classification::None
     end
 
     # Complete the map between parent and child using an array of parent
@@ -39,7 +44,7 @@ module Symm32
 
     # finds new basis vectors relative to orientation of x and z
     private def handle_cubic(parent_plane)
-      z_hat = z_map.first_value.axis.cartesian.normalized
+      z_hat = @parent_direction.not_nil!.axis.cartesian.normalized
       x_hat = parent_plane[0].axis.cartesian.normalized
       y_hat = z_hat.cross x_hat
       orient_non_planar(x_hat, y_hat, z_hat)
@@ -61,9 +66,7 @@ module Symm32
     end
 
     def clone
-      child_z_direction = z_map.first_key
-      parent_direction = z_map.first_value
-      self.class.new(@child, child_z_direction, @parent, parent_direction)
+      self.class.new(@child, @parent, @parent_direction)
     end
 
     # Sorta like a to_s, except we're using flags and classifications which

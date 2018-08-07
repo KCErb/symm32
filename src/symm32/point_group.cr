@@ -57,7 +57,6 @@ module Symm32
     # find the first direction that is parallel to coords
     def select_direction(coords : Vector3)
       directions.find do |dir|
-        next if dir.axis == Axis::None
         dir.axis.cartesian.cross(coords).zero?
       end
     end
@@ -78,6 +77,7 @@ module Symm32
     private def init_directions
       by_axis = isometries.group_by { |iso| iso.axis }
       dirs = by_axis.compact_map do |axis, iso_arr|
+        next if axis == Axis::None
         Direction.new(axis, iso_arr)
       end
       dirs.sort_by(&.axis)

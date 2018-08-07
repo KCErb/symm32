@@ -3,53 +3,43 @@ module Symm32
 
     getter child : PointGroup
     getter parent : PointGroup
-    @child_z_direction : Direction # defaults to None, not Nil
     @child_plane : Array(Direction)
 
     def initialize(@child, @parent)
       @orientations = [] of Orientation
-      # in calculate_orientations we handle the case of no-z-axis and
-      # need to assume this var exists for the rest of the program, so
-      # we initialize in a way that guarantees no nil since every group
-      # has at least the identity which is Axis::None
-      @child_z_direction = child.select_direction(Axis::Z) ||
-      child.select_direction(Axis::None).not_nil!
       @child_plane = child.plane
     end
 
     def calculate_orientations
       return @orientations unless child.fits_within?(parent)
-      return handle_no_z if @child_z_direction.axis == Axis::None
+      child_z_direction = child.select_direction(Axis::Z)
+      return handle_no_z unless child_z_direction
 
       # iterate through parent directions, finding possible orientations of
       # child's Z axis and subsequently its T plane in the parent
       parent.directions.each do |parent_direction|
-        next unless is_valid?(parent_direction)
+        next unless is_valid?(parent_direction, child_z_direction)
         build_orientations_in(parent_direction)
       end
       @orientations.uniq!
     end
 
     # The child has no z, so we return a special orientation for identity and
-    # inversion groups
+    # inversion groups which has a nil "parent_direction"
     private def handle_no_z
-      child_dir = child.select_direction(Axis::None).not_nil!
-      parent_dir = parent.select_direction(Axis::None).not_nil!
-      classification = CrystalFamily::Classification::None
-      orientation = Orientation.new(child, child_dir, parent, parent_dir)
-      [orientation]
+      [Orientation.new(child, parent)]
     end
 
     # this orientation is unique from parent's perspective?
     # this orientation fits cardinality-wise?
-    private def is_valid?(parent_direction)
+    private def is_valid?(parent_direction, child_z_direction)
       valid = true
       valid &= is_unique?(parent_direction)
-      valid &= @child_z_direction.count_fits(parent_direction) > 0
+      valid &= child_z_direction.count_fits(parent_direction) > 0
     end
 
     private def build_orientations_in(parent_direction)
-      orientation = Orientation.new(child, @child_z_direction, parent, parent_direction)
+      orientation = Orientation.new(child, parent, parent_direction)
       return @orientations << orientation if @child_plane.empty?
       orient_remaining(orientation, parent_direction)
     end

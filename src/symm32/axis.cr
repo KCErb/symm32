@@ -1,6 +1,6 @@
 module Symm32
   enum Axis : UInt8
-    None # identity and inverse have a location not an axis
+    None # identity and inverse have a location not an axis but this is the best spot
     Z    # z-axis {0,0,1}
     T0   # x-axis {1,0,0}
     T30

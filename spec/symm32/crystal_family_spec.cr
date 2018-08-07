@@ -6,8 +6,8 @@ module Symm32
       bar = make_family("bar")
       bar.point_groups.each { |pg| pg.family = bar }
       none = CrystalFamily::Classification::None
-      bar.point_groups[0].directions.map(&.classification).should eq [none, none, none]
-      bar.point_groups[1].directions.map(&.classification).should eq [none, none, none]
+      bar.point_groups[0].directions.map(&.classification).should eq [none, none]
+      bar.point_groups[1].directions.map(&.classification).should eq [none, none]
     end
 
     it "classifies tetragonal families appropriately" do
@@ -16,8 +16,8 @@ module Symm32
       none = CrystalFamily::Classification::None
       axial = CrystalFamily::Classification::Axial
       planar = CrystalFamily::Classification::Planar
-      tetragonal.point_groups[0].directions.map(&.classification).should eq [none, axial, planar]
-      tetragonal.point_groups[1].directions.map(&.classification).should eq [none, axial, planar]
+      tetragonal.point_groups[0].directions.map(&.classification).should eq [axial, planar]
+      tetragonal.point_groups[1].directions.map(&.classification).should eq [axial, planar]
     end
 
     it "classifies hexagonal families appropriately" do
@@ -26,8 +26,8 @@ module Symm32
       none = CrystalFamily::Classification::None
       axial = CrystalFamily::Classification::Axial
       planar = CrystalFamily::Classification::Planar
-      hexagonal.point_groups[0].directions.map(&.classification).should eq [none, axial, planar]
-      hexagonal.point_groups[1].directions.map(&.classification).should eq [none, axial, planar]
+      hexagonal.point_groups[0].directions.map(&.classification).should eq [axial, planar]
+      hexagonal.point_groups[1].directions.map(&.classification).should eq [axial, planar]
     end
 
     it "classifies cubic families appropriately" do
@@ -36,8 +36,8 @@ module Symm32
       none = CrystalFamily::Classification::None
       on = CrystalFamily::Classification::OnAxes
       off = CrystalFamily::Classification::OffAxes
-      cubic.point_groups[0].directions.map(&.classification).should eq [none, on, on]
-      cubic.point_groups[1].directions.map(&.classification).should eq [none, on, off]
+      cubic.point_groups[0].directions.map(&.classification).should eq [on, on]
+      cubic.point_groups[1].directions.map(&.classification).should eq [on, off]
     end
   end
 end

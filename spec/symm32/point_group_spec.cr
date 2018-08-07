@@ -14,8 +14,8 @@ module Symm32
         pg2m.name.should eq "2/m"
       end
 
-      it "has 2 directions" do
-        pg2m.directions.size.should eq 2
+      it "has 1 direction" do
+        pg2m.directions.size.should eq 1
       end
 
       it "has 4 isometries" do
@@ -36,8 +36,8 @@ module Symm32
       end
 
       it "selects directions given axes and sorts by enum" do
-        axes = [Axis::Z, Axis::None]
-        pg2m.select_directions(axes).first.axis.should eq Axis::None
+        axes = [Axis::D1, Axis::Z, Axis::None]
+        pg2m.select_directions(axes).first.axis.should eq Axis::Z
       end
 
       it "selects directions perpendicular to an axis" do

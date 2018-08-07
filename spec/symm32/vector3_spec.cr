@@ -17,6 +17,13 @@ module Symm32
       (v2 - v1).nearly_zero?.should be_true
     end
 
+    it "can be cloned" do
+      v1 = Vector3.new(1.0, 0.0, 0.0)
+      v2 = v1.clone
+      v2.x = 3.0
+      v1.x.should eq 1.0
+    end
+
     # original lib's methods, original tests (more or less)
     # https://github.com/unn4m3d/crystaledge/blob/master/spec/crystaledge_spec.cr
     it "works" do

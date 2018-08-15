@@ -1,0 +1,29 @@
+require "./cardinality"
+
+module Symmetry
+  module Crystallographic
+    # Store array of isometries in a "direction" which is the combined idea
+    # of isometry and axis.
+    class Direction
+      include Cardinality(Direction)
+
+      getter axis : Axis
+      getter flag : IsometryKind
+      getter isometries : Array(PointIsometry)
+      property classification : AxisKind
+
+      def initialize(@axis, @isometries)
+        @cardinality = init_cardinality
+        kinds = @isometries.map(&.isometry_kind)
+        @flag = kinds.reduce { |flag, kind| flag | kind } # @flag = kind | kind | kind
+        @classification = AxisKind::None
+      end
+
+      def clone
+        copy = self.class.new(axis, isometries)
+        copy.classification = classification
+        copy
+      end
+    end
+  end
+end

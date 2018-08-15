@@ -1,15 +1,13 @@
-require "spec"
-require "../src/symmetry"
+require "../../spec_helper"
 
 module Symmetry
-  class TestIsometry < Isometry
+  class TestPointIsometry < PointIsometry
     def transform(point : Vector3)
-      point.z += 3
-      point
+      point * 3
     end
   end
 
-  class TestCompoundIsometry < Isometry
+  class TestCompoundPointIsometry < PointIsometry
     include CompoundIsometry
 
     def initialize
@@ -19,6 +17,6 @@ module Symmetry
     end
   end
 
-  class TestGroup < Group
+  class TestPointGroup < PointGroup
   end
 end

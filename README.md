@@ -1,4 +1,4 @@
-# symm32
+# symmetry
 
 TODO: Write a description here
 
@@ -8,25 +8,25 @@ Add this to your application's `shard.yml`:
 
 ```yaml
 dependencies:
-  symm32:
-    gitlab: kcerb/symm32
+  symmetry:
+    gitlab: kcerb/symmetry
 ```
 
 ## Usage
 
 ```crystal
-require "symm32"
+require "symmetry"
 ```
 
-TODO: Write usage instructions here
+TODO: Write usage inclassions here
 
 ## Development
 
-TODO: Write development instructions here
+TODO: Write development inclassions here
 
 ## Contributing
 
-1. Fork it (<https://gitlab.com/kcerb/symm32/fork>)
+1. Fork it (<https://gitlab.com/kcerb/symmetry/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)

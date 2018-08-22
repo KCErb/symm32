@@ -8,7 +8,7 @@ module Symm32
 
     it "can be cloned" do
       d = Direction.new(Axis::Z, ISOMETRIES1)
-      d.classification = CrystalFamily::Classification::OnAxes
+      d.classification = AxisKind::OnAxes
       d2 = d.clone
       d2.axis.should eq d.axis
       d2.isometries.should eq d.isometries

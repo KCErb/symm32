@@ -4,8 +4,9 @@ module Symm32
   # Note, since this comes from someone else's library
   describe Vector3 do
     # my methods my tests
-    it "can distinguishes == from close_to?" do
+    it "distinguishes == from close_to?" do
       v1 = Vector3.new(1.0, 0.0, 0.0)
+      # https://github.com/crystal-lang/crystal/issues/3103
       v2 = Vector3.new(1.0000000001, 0.0, 0.0)
       v1.should_not eq v2
       v1.close_to?(v2).should be_true
@@ -13,6 +14,8 @@ module Symm32
 
     it "can tell if something is nearly zero" do
       v1 = Vector3.new(1.0, 0.0, 0.0)
+      # this number should have more zeros but rounding is broken
+      # https://github.com/crystal-lang/crystal/issues/3103
       v2 = Vector3.new(1.0000000001, 0.0, 0.0)
       (v2 - v1).nearly_zero?.should be_true
     end
@@ -31,7 +34,8 @@ module Symm32
       vec2 = Vector3.new(3.0, 4.0, 0.0)
       (vzero == vec2).should eq(false)
       (vzero + vec2).should eq(vec2)
-      (vzero - vec2).should eq(Vector3.new(-3.0, -4.0, -0.0))
+      (vzero - vec2).values.should eq({-3.0, -4.0, -0.0})
+      (vzero - vec2).should eq(-vec2)
 
       vec3 = Vector3.new(1.0, 2.0, 3.0)
       vec4 = Vector3.new(0.0, 3.0, 4.0)

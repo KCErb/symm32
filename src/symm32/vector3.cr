@@ -7,11 +7,40 @@ module Symm32
     @y : Float64
     @z : Float64
 
+    def initialize(x, y, z : Int32)
+      @x = x.to_f64
+      @y = y.to_f64
+      @z = z.to_f64
+    end
+
     def initialize(@x, @y, @z : Float64)
+      @x = 0.0 if @x.abs < Float64::EPSILON
+      @y = 0.0 if @y.abs < Float64::EPSILON
+      @z = 0.0 if @z.abs < Float64::EPSILON
+    end
+
+    def initialize(polar, azimuthal : Int32)
+      @x, @y, @z = compute_cartesian(polar.to_f64, azimuthal.to_f64)
+    end
+
+    def initialize(polar, azimuthal : Float64)
+      @x, @y, @z = compute_cartesian(polar, azimuthal)
+    end
+
+    def compute_cartesian(polar, azimuthal)
+      x = Math.sin(polar) * Math.cos(azimuthal)
+      y = Math.sin(polar) * Math.sin(azimuthal)
+      z = Math.cos(polar)
+      {x, y, z}
     end
 
     def values
       {@x, @y, @z}
+    end
+
+    # unary negative
+    def -
+      Vector3.new(-self.x, -self.y, -self.z)
     end
 
     def +(other : Vector3)
@@ -47,22 +76,22 @@ module Symm32
 
     def ==(other : Vector3)
       (x - other.x).abs <= Float64::EPSILON &&
-      (y - other.y).abs <= Float64::EPSILON &&
-      (z - other.z).abs <= Float64::EPSILON
+        (y - other.y).abs <= Float64::EPSILON &&
+        (z - other.z).abs <= Float64::EPSILON
     end
 
     def close_to?(other : Vector3)
       (x - other.x).abs.round(Float64::DIGITS).zero? &&
-      (y - other.y).abs.round(Float64::DIGITS).zero? &&
-      (z - other.z).abs.round(Float64::DIGITS).zero?
+        (y - other.y).abs.round(Float64::DIGITS).zero? &&
+        (z - other.z).abs.round(Float64::DIGITS).zero?
     end
 
     def zero?
-      self == self.class.new(0.0,0.0,0.0)
+      self == self.class.new(0.0, 0.0, 0.0)
     end
 
     def nearly_zero?
-      self.close_to? self.class.new(0.0,0.0,0.0)
+      self.close_to? self.class.new(0.0, 0.0, 0.0)
     end
 
     def dot(other : Vector3)
@@ -79,6 +108,11 @@ module Symm32
 
     def magnitude
       Math.sqrt(x**2 + y**2 + z**2)
+    end
+
+    def angle_from(other : Vector3)
+      cos_theta = dot(other) / magnitude / other.magnitude
+      Math.acos(cos_theta)
     end
   end
 end

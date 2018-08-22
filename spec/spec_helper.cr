@@ -1,15 +1,43 @@
 require "spec"
 require "../src/symm32"
 
-ISO0 = Symm32::Isometry.new(Symm32::IsometryKind::Identity, Symm32::Axis::None)
-ISO1 = Symm32::Isometry.new(Symm32::IsometryKind::Mirror, Symm32::Axis::Z)
-ISO2 = Symm32::Isometry.new(Symm32::IsometryKind::Mirror, Symm32::Axis::T90)
-ISO3 = Symm32::Isometry.new(Symm32::IsometryKind::Rotation2, Symm32::Axis::T0)
-ISO4 = Symm32::Isometry.new(Symm32::IsometryKind::Rotation2, Symm32::Axis::Z)
+module Symm32
+  ISO0 = Isometry::IDENTITY
+  ISO1 = Mirror.new(Axis::Z)
+  ISO2 = Mirror.new(Axis::T90)
+  ISO3 = Rotation.new(Axis::T0, 2)
+  ISO4 = Rotation.new(Axis::Z, 2)
+  ISO5 = Rotation.new(Axis::D1, 3)
 
-ISOMETRIES1 = [ISO0, ISO1, ISO2, ISO3, ISO4]
-ISOMETRIES2 = [ISO0, ISO1, ISO3]
-ISOMETRIES3 = [ISO0, ISO2, ISO4]
+  ISOMETRIES1 = [ISO0, ISO1, ISO2, ISO3, ISO4] of Isometry
+  ISOMETRIES2 = [ISO0, ISO1, ISO3] of Isometry
+  ISOMETRIES3 = [ISO0, ISO2, ISO4] of Isometry
+
+  class TestIsometry
+    include Isometry
+
+    def initialize
+      @kind = IsometryKind::None
+    end
+
+    def transform(point : Vector3)
+      point.z += 3
+      point
+    end
+  end
+
+  class TestCompoundIsometry
+    include Isometry
+    include CompoundIsometry
+
+    def initialize
+      @kind = IsometryKind::None
+      @isometries = [] of Isometry
+      @isometries << TestIsometry.new
+      @isometries << TestIsometry.new
+    end
+  end
+end
 
 def orientations_count(child_name, parent_name)
   Symm32::POINT_GROUPS[child_name].orientations_within(Symm32::POINT_GROUPS[parent_name]).size

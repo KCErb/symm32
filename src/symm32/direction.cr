@@ -9,14 +9,14 @@ module Symm32
     getter axis : Axis
     getter flag : IsometryKind
     getter isometries : Array(Isometry)
-    property classification : CrystalFamily::Classification
+    property classification : AxisKind
 
     def initialize(@axis, @isometries)
       @cardinality = init_cardinality
       kinds = @isometries.map(&.kind)
       @flag = kinds.reduce { |flag, kind| flag | kind } # @flag = kind | kind | kind
       # compiler needs default values since we can't init this one
-      @classification = CrystalFamily::Classification::None
+      @classification = AxisKind::None
     end
 
     def clone

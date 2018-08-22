@@ -1,40 +1,24 @@
 module Symm32
   class PointGroup
+    getter family : Family
+    # almost Hermann–Mauguin notation, just replace "bar" with "b" to make ASCII friendly
+    # as in 3 with a line over it is replaced with 3b
+    getter name : String
+    getter isometries : Array(Isometry)
     include Cardinality(PointGroup)
-    @directions = Array(Direction).new
-    @family = CrystalFamily.new
-    JSON.mapping(
-      name: {type: String, setter: false},
-      isometries: {type: Array(Isometry), setter: false}
-    )
+    getter directions : Array(Direction)
 
-    getter directions
-    getter family : CrystalFamily
-
-    # Create new point group object from array of isometry strings
-    # the format of these strings is important and specified in isometry.cr
-    def initialize(pull : JSON::PullParser)
-      previous_def
+    def initialize(@family, @name, @isometries)
       @cardinality = init_cardinality
       @directions = init_directions
+      @family.classify_directions(@directions)
     end
 
-    # some things we can't init until we have a family which we don't have until
-    # after initialization, see the root symm32.cr
-    # so we put it here in the setter.
-    def family=(fam : CrystalFamily)
-      fam.classify_directions(self)
-      @family = fam
-    end
-
-    # Determine if this group is a subgroup of the one passed in
-    def orientations_within(parent : PointGroup)
-      if family.name == "dummy" || parent.family.name == "dummy"
-        raise %q{Cannot calculate orientations without family information.
-          This method must not be called from or on point groups in isolation."}
-      end
-      factory = OrientationFactory.new(self, parent)
-      factory.calculate_orientations
+    # create point group from minimal strings, used by POINT_GROUPS constant
+    def self.parse(family, name, isometry_strings)
+      isometries = [] of Isometry
+      isometry_strings.each { |iso_string| isometries << Isometry.parse(iso_string) }
+      new(Family.parse(family), name, isometries)
     end
 
     def plane
@@ -57,7 +41,7 @@ module Symm32
     # find the first direction that is parallel to coords
     def select_direction(coords : Vector3)
       directions.find do |dir|
-        dir.axis.cartesian.cross(coords).zero?
+        dir.axis.cross(coords).zero?
       end
     end
 
@@ -75,9 +59,9 @@ module Symm32
     end
 
     private def init_directions
-      by_axis = isometries.group_by { |iso| iso.axis }
+      by_axis = isometries.group_by { |iso| iso.responds_to?(:axis) ? iso.axis : Axis::Origin }
       dirs = by_axis.compact_map do |axis, iso_arr|
-        next if axis == Axis::None
+        next if axis == Axis::Origin
         Direction.new(axis, iso_arr)
       end
       dirs.sort_by(&.axis)

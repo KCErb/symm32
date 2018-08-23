@@ -1,4 +1,4 @@
-require "../spec_helper"
+require "./spec_helper"
 
 module Symm32
   # Note, since this comes from someone else's library

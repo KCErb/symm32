@@ -1,10 +1,16 @@
 require "./symm32"
 require "./species/**"
 
-# Add "species" to symm32 module
+# Add "Species" to symm32 module
 module Symm32
   struct Species
-    def initialize(@number : Int32, @name : String, @orientation : Orientation)
+    getter name : String
+    getter number : Int32
+    getter orientation : Orientation
+
+    def initialize(@number, @orientation)
+      # Not a proper name, will try to implement that in the future
+      @name = "#{number}. #{parent.name} > #{child.name}"
     end
 
     def child
@@ -26,11 +32,8 @@ module Symm32
       orientations = factory.calculate_orientations
       orientations.each do |orient|
         species_counter += 1
-        name = "#{species_counter}. #{parent.name} > #{child.name}"
-        SPECIES << Species.new(species_counter, name, orient)
+        SPECIES << Species.new(species_counter, orient)
       end
     end
   end
-
-  # module
 end

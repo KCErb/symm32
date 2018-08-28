@@ -84,12 +84,10 @@ module Symm32
       fingerprint
     end
 
-    def hash
-      fingerprint.hash
-    end
+    def_hash fingerprint
 
     def ==(other : Orientation)
-      hash == other.hash
+      fingerprint == other.fingerprint
     end
   end
 end

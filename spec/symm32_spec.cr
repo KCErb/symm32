@@ -7,10 +7,6 @@ module Symm32
       POINT_GROUPS.size.should eq 32
     end
 
-    it "can be accessed by a method" do
-      Symm32.point_groups.should eq POINT_GROUPS
-    end
-
     it "can find individuals by name" do
       Symm32.point_group("222").should eq POINT_GROUPS[5]
     end

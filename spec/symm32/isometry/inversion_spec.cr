@@ -8,7 +8,10 @@ module Symm32
 
     it "inverts" do
       vec = Vector3.new(1, 2, 3)
-      Isometry::INVERSION.transform(vec).should eq Vector3.new(-1, -2, -3)
+      point = TestPoint.new(vec)
+      ans_vec = Vector3.new(-1, -2, -3)
+      ans = TestPoint.new(ans_vec, false)
+      Isometry::INVERSION.transform(point).should eq ans
     end
   end
 end

@@ -1,5 +1,5 @@
 # Borrowed largely from: https://github.com/unn4m3d/crystaledge/blob/master/src/crystaledge/vector3.cr
-module Symm32
+module SymmUtil
   struct Vector3
     property x, y, z
 
@@ -84,6 +84,13 @@ module Symm32
       (x - other.x).abs.round(Float64::DIGITS).zero? &&
         (y - other.y).abs.round(Float64::DIGITS).zero? &&
         (z - other.z).abs.round(Float64::DIGITS).zero?
+    end
+
+    def round(arg)
+      x = @x.round(arg)
+      y = @y.round(arg)
+      z = @z.round(arg)
+      self.class.new(x, y, z)
     end
 
     def zero?

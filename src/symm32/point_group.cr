@@ -21,6 +21,10 @@ module Symm32
       new(Family.parse(family), name, isometries)
     end
 
+    def inverse?
+      isometries.includes? Isometry::INVERSION
+    end
+
     def plane
       directions_perp_to(Axis::Z)
     end

@@ -22,13 +22,17 @@ module Symm32
       @a_23 = -2*y*z
     end
 
-    def transform(point : Vector3)
+    def transform(point : Point)
       tuple = {
         point.x * @a_11 + point.y * @a_12 + point.z * @a_13,
         point.x * @a_12 + point.y * @a_22 + point.z * @a_23,
         point.x * @a_13 + point.y * @a_23 + point.z * @a_33,
       }
-      Vector3.new(*tuple)
+      new_coords = Vector3.new(*tuple)
+      p_new = point.clone
+      p_new.coordinates = new_coords
+      p_new.invert_state
+      p_new
     end
   end
 end

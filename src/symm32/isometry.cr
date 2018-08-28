@@ -1,6 +1,13 @@
 module Symm32
+  # Provides a common type for isometries
   module Isometry
     getter kind : IsometryKind
+
+    abstract def transform(point : Point) : Point
+
+    def transform(points : Set(Point))
+      points.map { |point| transform(point) }.to_set
+    end
 
     # create isometry from minimal string
     # Name format of isometry example (-3d2^2):

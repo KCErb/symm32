@@ -2,7 +2,7 @@ module Symm32
   module CompoundIsometry
     getter isometries : Array(Isometry)
 
-    def transform(point : Vector3)
+    def transform(point : Point)
       isometries.reduce(point) { |acc, isometry| isometry.transform(acc) }
     end
   end

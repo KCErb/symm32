@@ -3,8 +3,12 @@ require "./spec_helper"
 module Symm32
   describe Isometry do
     it "can be included" do
-      res = TestIsometry.new.transform(Vector3.new(0, 0, 0))
-      res.should eq Vector3.new(0, 0, 3)
+      vec = Vector3.new(0, 0, 0)
+      point = TestPoint.new(vec)
+      res = TestIsometry.new.transform(point)
+      ans_vec = Vector3.new(0, 0, 3)
+      ans = TestPoint.new(ans_vec)
+      res.should eq ans
     end
   end
 

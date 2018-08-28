@@ -5,8 +5,11 @@ module Symm32
     it "transforms a point based on children's combined rules" do
       comp = TestCompoundIsometry.new
       zero = Vector3.new(0, 0, 0)
-      res = comp.transform(zero)
-      res.should eq Vector3.new(0, 0, 6)
+      point = TestPoint.new(zero)
+      res = comp.transform(point)
+      ans_vec = Vector3.new(0, 0, 6)
+      ans = TestPoint.new(ans_vec)
+      res.should eq ans
     end
 
     it "it's an isometry" do

@@ -16,13 +16,16 @@ module Symm32
       @matrix = compute_matrix
     end
 
-    def transform(point : Vector3)
+    def transform(point : Point)
       tuple = {
         point.x * @matrix[0][0] + point.y * @matrix[0][1] + point.z * @matrix[0][2],
         point.x * @matrix[1][0] + point.y * @matrix[1][1] + point.z * @matrix[1][2],
         point.x * @matrix[2][0] + point.y * @matrix[2][1] + point.z * @matrix[2][2],
       }
-      Vector3.new(*tuple)
+      new_coords = Vector3.new(*tuple)
+      p_new = point.clone
+      p_new.coordinates = new_coords
+      p_new
     end
 
     private def compute_matrix

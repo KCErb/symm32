@@ -8,7 +8,8 @@ module Symm32
 
     it "doesn't change points it is asked to transform" do
       vec = Vector3.new(1, 2, 3)
-      Isometry::IDENTITY.transform(vec).should eq vec
+      point = TestPoint.new(vec)
+      Isometry::IDENTITY.transform(point).should eq point
     end
   end
 end

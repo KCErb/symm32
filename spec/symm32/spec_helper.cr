@@ -19,9 +19,12 @@ module Symm32
       @kind = IsometryKind::None
     end
 
-    def transform(point : Vector3)
-      point.z += 3
-      point
+    def transform(point : Point)
+      new_coord = point.coordinates
+      new_coord.z += 3
+      p_new = point.clone
+      p_new.coordinates = new_coord
+      p_new
     end
   end
 

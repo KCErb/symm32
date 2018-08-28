@@ -6,8 +6,11 @@ module Symm32
       @kind = IsometryKind::Inversion
     end
 
-    def transform(point : Vector3)
-      -point
+    def transform(point : Point)
+      p_new = point.clone
+      p_new.coordinates = -point.coordinates
+      p_new.invert_state
+      p_new
     end
   end
 

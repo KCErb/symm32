@@ -20,6 +20,18 @@ module Symm32
     def parent
       orientation.parent
     end
+
+    def n_diff
+      parent.isometries.size - child.isometries.size
+    end
+
+    # array of child directions where the axis has been changed
+    # to the parent's axis
+    def reoriented_child
+      orientation.map.map do |child_dir, parent_dir|
+        Direction.new(parent_dir.axis, child_dir.isometries)
+      end
+    end
   end
 
   SPECIES = [] of Species

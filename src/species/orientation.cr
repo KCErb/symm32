@@ -5,9 +5,10 @@ module Symm32
     # parent may not have any direction since directions have axes
     @parent_direction : Direction | Nil
 
-    # map of child direction to parent direction, i.e. map[z]
-    # would give you the direction in the parent that the child's z
-    # is embedded in, in this orientation
+    # map of child direction to parent direction,
+    # { child => parent }
+    # i.e. map[z] would give you the direction in the parent
+    # that the child's z is embedded in, in this orientation
     property map = Hash(Direction, Direction).new
 
     # A little flag for marking orientations as bad, used by the factory

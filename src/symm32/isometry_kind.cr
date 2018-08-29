@@ -1,6 +1,6 @@
 module Symm32
-  @[Flags]
   enum IsometryKind
+    None
     Identity
     Inversion
     Mirror

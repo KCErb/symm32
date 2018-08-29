@@ -6,7 +6,7 @@ module SymmUtil
     # internal state or its opposite (assumed two state points)
     def initialize(@coordinates, default = true); end
 
-    delegate x, y, z, to: @coordinates
+    delegate x, y, z, values, to: @coordinates
 
     # How should this Point respond to an inversion operation?
     # By default, it does nothing. Points track their own internal state

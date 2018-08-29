@@ -36,4 +36,13 @@ module Symm32
       end
     end
   end
+
+  # get all species where `name` is the name of the child group
+  def self.species_for_child(name : String)
+    SPECIES.select { |species| species.child.name == name }
+  end
+
+  def self.species(num : Int32)
+    SPECIES.select { |species| species.number == num }
+  end
 end

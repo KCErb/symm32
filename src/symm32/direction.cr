@@ -7,14 +7,13 @@ module Symm32
     include Cardinality(Direction)
 
     getter axis : Axis
-    getter flag : IsometryKind
+    getter kinds : Set(IsometryKind)
     getter isometries : Array(Isometry)
     property classification : AxisKind
 
     def initialize(@axis, @isometries)
       @cardinality = init_cardinality
-      kinds = @isometries.map(&.kind)
-      @flag = kinds.reduce { |flag, kind| flag | kind } # @flag = kind | kind | kind
+      @kinds = @isometries.map(&.kind).to_set
       # compiler needs default values since we can't init this one
       @classification = AxisKind::None
     end

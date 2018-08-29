@@ -14,7 +14,7 @@ module Symm32
     T135 = Vector3.new(Math::PI/2, Math::PI/4*3)
     T150 = Vector3.new(Math::PI/2, Math::PI/6*5)
     # edges are counted clockwise from x-direction as you look down the z-axis on a cube
-    E1 = Vector3.new(1, 0, 1)
+    E1 = Vector3.new(1, 0, 1).normalized
     E2 = Vector3.new(0, 1, 1).normalized
     E3 = Vector3.new(-1, 0, 1).normalized
     E4 = Vector3.new(0, -1, 1).normalized
@@ -65,6 +65,12 @@ module Symm32
             raise "error impossible"
           end
         {% end %}
+    end
+
+    # delegate is the general name for the enum pattern here
+    # but coordinates is a nicer name when calling
+    def coordinates
+      delegate
     end
 
     def planar?

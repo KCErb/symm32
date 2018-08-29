@@ -79,7 +79,7 @@ module Symm32
       sorted = map.to_a.sort_by { |k, v| v.axis.value }.to_h
       fingerprint = ""
       sorted.each do |child_direction, parent_direction|
-        fingerprint += "#{parent_direction.classification} => {#{child_direction.flag}} "
+        fingerprint += "#{parent_direction.classification} => {#{child_direction.kinds}} "
       end
       fingerprint
     end

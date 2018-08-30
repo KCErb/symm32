@@ -22,7 +22,7 @@ module Symm32
     end
 
     def n_diff
-      parent.isometries.size - child.isometries.size
+      parent.isometries.size / child.isometries.size
     end
 
     # array of child directions where the axis has been changed
@@ -55,6 +55,6 @@ module Symm32
   end
 
   def self.species(num : Int32)
-    SPECIES.select { |species| species.number == num }
+    SPECIES.select { |species| species.number == num }.first
   end
 end

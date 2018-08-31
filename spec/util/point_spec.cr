@@ -8,6 +8,7 @@ module SymmUtil
       point.x.should eq 0
       point.y.should eq 1
       point.z.should eq 2
+      point.values.should eq({0, 1, 2})
       point.internal_state.should eq 1
 
       point = TestPoint.new(vec, false)

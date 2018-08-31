@@ -21,7 +21,8 @@ module Symm32
       orientation.parent
     end
 
-    def n_diff
+    # number of orientational domain states
+    def n_domain
       parent.isometries.size / child.isometries.size
     end
 
@@ -47,11 +48,6 @@ module Symm32
         SPECIES << Species.new(species_counter, orient)
       end
     end
-  end
-
-  # get all species where `name` is the name of the child group
-  def self.species_for_child(name : String)
-    SPECIES.select { |species| species.child.name == name }
   end
 
   def self.species(num : Int32)

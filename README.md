@@ -1,4 +1,4 @@
-# symm32
+# Symm32
 
 TODO: Write a description here
 

@@ -8,7 +8,7 @@ module Symm32
     getter cardinality : IsometryCardinality
     @cardinality = IsometryCardinality.new
 
-    # create an IsometryCardinality (hash) from an Array of Isometry Arrays
+    # create an IsometryCardinality (hash) from an Array of Isometries
     def init_cardinality
       Cardinality.compute_cardinality(@isometries)
     end

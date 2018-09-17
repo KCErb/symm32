@@ -26,7 +26,7 @@ module Symm32
       factory = OrientationFactory.new(child, parent)
       orientations = factory.calculate_orientations
       orientations.size.should eq 1
-      orientations.first.map.empty?.should be_true
+      orientations.first.correspondence.empty?.should be_true
     end
 
     # check some specific cases which have failed in the past

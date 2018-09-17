@@ -23,7 +23,7 @@ module Symm32
       child = Symm32.point_group("1b")
       parent = Symm32.point_group("222")
       o = Orientation.new(child, parent)
-      o.parent_classification.should eq AxisKind::None
+      o.axis_classification.should eq AxisKind::None
     end
 
     it "returns classification for not-nil parent" do
@@ -31,7 +31,7 @@ module Symm32
       parent = Symm32.point_group("422")
       parent_z = parent.directions.first
       o = Orientation.new(child, parent, parent_z)
-      o.parent_classification.should eq AxisKind::Axial
+      o.axis_classification.should eq AxisKind::Axial
     end
 
     it "maps child with no T plane" do
@@ -39,7 +39,7 @@ module Symm32
       parent = Symm32.point_group("mm2")
       parent_z = parent.directions.first
       o = Orientation.new(child, parent, parent_z)
-      o.map[child.directions.first].should eq parent_z
+      o.correspondence[child.directions.first].should eq parent_z
     end
 
     describe "#complete" do
@@ -50,8 +50,8 @@ module Symm32
         o = Orientation.new(child, parent, parent_z)
         parent_plane = parent.directions_perp_to(Axis::Z)
         o.complete([parent_plane[0], parent_plane[2]])
-        o.map[child.plane.first].should eq parent_plane.first
-        o.map[child.plane[1]].should eq parent_plane[2]
+        o.correspondence[child.plane.first].should eq parent_plane.first
+        o.correspondence[child.plane[1]].should eq parent_plane[2]
       end
 
       it "completes cubic child" do
@@ -61,7 +61,7 @@ module Symm32
         o = Orientation.new(child, parent, parent_z)
         parent_plane = parent.directions_perp_to(Axis::Z)
         o.complete([parent_plane[0], parent_plane[2]])
-        o.map[child.diags.first].should eq parent.diags.first
+        o.correspondence[child.diags.first].should eq parent.diags.first
       end
 
       # in this special case, child plane can fit in this
@@ -85,8 +85,8 @@ module Symm32
       o = Orientation.new(child, parent, parent_z)
       o2 = o.clone
       child_z_direction = child.select_direction(Axis::Z).not_nil!
-      o2.map[child_z_direction] = parent.directions[1]
-      o.map[child_z_direction].should eq parent_z
+      o2.correspondence[child_z_direction] = parent.directions[1]
+      o.correspondence[child_z_direction].should eq parent_z
     end
 
     describe "equality" do

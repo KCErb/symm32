@@ -8,9 +8,24 @@ module Symm32
     getter number : Int32
     getter orientation : Orientation
 
+    # simple unique name generation
+    # ex: 145. 6/mmm > 1
+    #
+    # Child will have either 1 or 2 symbols appended to name
+    # to show how it is oriented first in the z, then in the plane
+    # with respect to the parent's classification scheme.
+    #
+    # Planar orientation only matters to cubic parents, so it is
+    # omitted otherwise.
+    #
+    # ex: 58. 4/mmm > 2/m|
+    #     59. 4/mmm > 2/m_
+    #     146. 23 > 3\
+    #     147. 23 > 222++
     def initialize(@number, @orientation)
-      # Not a proper name, will try to implement that in the future
       @name = "#{number}. #{parent.name} > #{child.name}"
+      @name += orientation.axis_classification.symbol
+      @name += orientation.plane_classification.symbol if parent.family.cubic?
     end
 
     def child
@@ -29,7 +44,7 @@ module Symm32
     # array of child directions where the axis has been changed
     # to the parent's axis
     def reoriented_child
-      orientation.map.map do |child_dir, parent_dir|
+      orientation.correspondence.map do |child_dir, parent_dir|
         Direction.new(parent_dir.axis, child_dir.isometries)
       end
     end

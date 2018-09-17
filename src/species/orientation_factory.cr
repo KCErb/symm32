@@ -121,7 +121,7 @@ module Symm32
     # with this parent's classification?
     private def is_unique?(parent_direction)
       index = @orientations.index do |orientation|
-        orientation.parent_classification == parent_direction.classification
+        orientation.axis_classification == parent_direction.classification
       end
       index.nil? # if index is nil, then this is unique
     end

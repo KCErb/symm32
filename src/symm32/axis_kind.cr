@@ -7,5 +7,20 @@ module Symm32
     Planar  # in axial families, isometries perp. to the z axis
     OnAxes  # in cubic families, isometries on cubic axes (xyz)
     OffAxes # in cubic families, isometries off cubic axes (everything else)
+
+    def symbol
+      case
+      when axial?
+        "|"
+      when planar?
+        "_"
+      when on_axes?
+        "+"
+      when off_axes?
+        "\\"
+      else
+        ""
+      end
+    end
   end
 end

@@ -23,9 +23,7 @@ module Symm32
     #     146. 23 > 3\
     #     147. 23 > 222++
     def initialize(@number, @orientation)
-      @name = "#{number}. #{parent.name} > #{child.name}"
-      @name += orientation.axis_classification.symbol
-      @name += orientation.plane_classification.symbol if parent.family.cubic?
+      @name = "#{number}. #{parent.name} > #{orientation.child_name}"
     end
 
     def child
@@ -67,5 +65,9 @@ module Symm32
 
   def self.species(num : Int32)
     SPECIES.select { |species| species.number == num }.first
+  end
+
+  def self.species_for(parent)
+    SPECIES.select { |species| species.parent == parent }
   end
 end

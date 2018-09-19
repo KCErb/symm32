@@ -5,7 +5,7 @@ module Symm32
     it "can be included" do
       vec = Vector3.new(0, 0, 0)
       point = TestPoint.new(vec)
-      res = TestIsometry.new.transform(point)
+      res = TestIsometry.new(3).transform(point)
       ans_vec = Vector3.new(0, 0, 3)
       ans = TestPoint.new(ans_vec)
       res.should eq ans

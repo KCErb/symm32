@@ -3,9 +3,10 @@ require "./spec_helper"
 module Symm32
   class Foo
     include Cardinality(Foo)
-    getter isometries : Array(Isometry)
+    getter isometries = Set(Isometry).new
 
-    def initialize(@isometries)
+    def initialize(isometries_arr)
+      isometries_arr.each { |iso| @isometries << iso }
       @cardinality = init_cardinality
     end
   end

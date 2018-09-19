@@ -8,10 +8,11 @@ module Symm32
 
     getter axis : Axis
     getter kinds : Set(IsometryKind)
-    getter isometries : Array(Isometry)
+    getter isometries = Set(Isometry).new
     property classification : AxisKind
 
-    def initialize(@axis, @isometries)
+    def initialize(@axis, isometries_arr)
+      isometries_arr.each { |iso| @isometries << iso }
       @cardinality = init_cardinality
       @kinds = @isometries.map(&.kind).to_set
       # compiler needs default values since we can't init this one

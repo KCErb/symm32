@@ -7,7 +7,7 @@ module Symm32
       zero = Vector3.new(0, 0, 0)
       point = TestPoint.new(zero)
       res = comp.transform(point)
-      ans_vec = Vector3.new(0, 0, 6)
+      ans_vec = Vector3.new(0, 0, 5)
       ans = TestPoint.new(ans_vec)
       res.should eq ans
     end

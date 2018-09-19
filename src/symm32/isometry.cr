@@ -3,6 +3,13 @@ module Symm32
   module Isometry
     getter kind : IsometryKind
 
+    # This shouldn't be necessary but I seem to be getting a bug when
+    # saying that this hash should hold values of type "Isometry"
+    # @@instances = Hash(String, Isometry).new
+    alias PossibleIsometries = Identity |
+                               ImproperRotation | Inversion | Mirror | Rotation
+    @@instances = Hash(String, PossibleIsometries).new
+
     abstract def transform(point : Point) : Point
 
     def transform(points : Set(Point))
@@ -27,14 +34,25 @@ module Symm32
     #   d - diagonal (ex: 111 to -1-1-1): d1, d2, d3, d4)
     #   e - edge (ex: from 101 to 10-1): e1, e2, e3, e4)
     # 4 - if ^ is present, number of times to apply rotation
-    def self.parse(nameString)
-      kind, _, power = nameString.partition("^")
-      return IDENTITY if kind == "e"
-      return INVERSION if kind == "i"
-      bar = kind[0] == '-'
-      axis = parse_axis(kind, bar)
-      return Mirror.new(axis) if kind[0] == 'm'
-      init_rotation(bar, axis, kind, power)
+    def self.parse(name_string)
+      return @@instances[name_string] if @@instances[name_string]?
+      # if not already in instances, add to instances keyed by name string
+      kind, _, power = name_string.partition("^")
+      if kind == "e"
+        result = IDENTITY
+      elsif kind == "i"
+        result = INVERSION
+      else
+        bar = kind[0] == '-'
+        axis = parse_axis(kind, bar)
+        result = if kind[0] == 'm'
+                   Mirror.new(axis)
+                 else
+                   init_rotation(bar, axis, kind, power)
+                 end
+      end
+      @@instances[name_string] = result
+      result
     end
 
     private def self.parse_axis(direction, bar)
@@ -50,7 +68,7 @@ module Symm32
     end
 
     private def self.init_rotation(bar, axis, kind, power)
-      # 2, 3, 4, 6 or -2, -3, -4, -6 from stuff like mz or 3d2
+      # 2, 3, 4, 6 or -2, -3, -4, -6 from stuff like 2z or 3d2
       kind_string = bar ? kind[0, 2] : kind[0, 1]
       n_fold = kind_string[-1].to_s
       power = 1 if power.empty?

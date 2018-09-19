@@ -35,6 +35,35 @@ module Symm32
       end
     end
 
+    def child_name
+      name = child.name
+      name += axis_classification.symbol
+      name += plane_classification.symbol if parent.family.cubic?
+      name
+    end
+
+    # Self is a subset of other if:
+    # 1. They share the same parent
+    # 2. self can be oriented within other and retain orientation within parent.
+    #
+    # Example: orientation of 4 within 4/mmm requires z orientation of 4
+    # orientation of 2 within 4 requires z orientation of 2, but orientation of 2
+    # within 4/mmm can be either in z (2|) or in plane (2_). Thus 2|
+    # is a subset of 4 (wrt 4/mmm) but 2_ is not.
+    def subset?(other : Orientation)
+      return false if parent != other.parent
+      return false unless child.fits_within?(other.child) # origin cardinality
+      return true unless @parent_direction                # if no dir, then origin check was enough
+      # ensure that for all directions an equivalent direction can be found
+      # in other (equiv. wrt. common parent)
+      correspondence.all? do |child_dir, parent_dir|
+        top_dirs = other.correspondence.select do |_, top_parent_dir|
+          parent_dir.classification == top_parent_dir.classification
+        end
+        top_dirs.any? { |dir_tuple| child_dir.fits_within? dir_tuple.first }
+      end
+    end
+
     # Complete the correspondence between parent and child using an array of parent
     # directions which map to the child's planar directions
     def complete(parent_plane)

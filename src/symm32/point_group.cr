@@ -4,11 +4,12 @@ module Symm32
     # almost Hermann–Mauguin notation, just replace "bar" with "b" to make ASCII friendly
     # as in 3 with a line over it is replaced with 3b
     getter name : String
-    getter isometries : Array(Isometry)
+    getter isometries = Set(Isometry).new
     include Cardinality(PointGroup)
     getter directions : Array(Direction)
 
-    def initialize(@family, @name, @isometries)
+    def initialize(@family, @name, isometries_arr)
+      isometries_arr.each { |iso| @isometries << iso }
       @cardinality = init_cardinality
       @directions = init_directions
       @family.classify_directions(@directions)
@@ -35,6 +36,10 @@ module Symm32
 
     def diags
       select_directions([Axis::D1, Axis::D2, Axis::D3, Axis::D4])
+    end
+
+    def order
+      isometries.size
     end
 
     # get array of isometries in given axis

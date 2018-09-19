@@ -8,7 +8,7 @@ module Symm32
       kind_enum = "ImproperRotation#{n_fold}"
       kind_enum += "_#{power}" unless power == 1
       @kind = IsometryKind.parse(kind_enum)
-      @isometries = [] of Isometry
+      @isometries = Set(Isometry).new
       @isometries << Rotation.new(@axis, n_fold, power)
       @isometries << Isometry::INVERSION
     end

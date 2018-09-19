@@ -8,20 +8,20 @@ module Symm32
   ISO4 = Rotation.new(Axis::Z, 2)
   ISO5 = Rotation.new(Axis::D1, 3)
 
-  ISOMETRIES1 = [ISO0, ISO1, ISO2, ISO3, ISO4] of Isometry
-  ISOMETRIES2 = [ISO0, ISO1, ISO3] of Isometry
-  ISOMETRIES3 = [ISO0, ISO2, ISO4] of Isometry
+  ISOMETRIES1 = Set{ISO0, ISO1, ISO2, ISO3, ISO4}
+  ISOMETRIES2 = Set{ISO0, ISO1, ISO3}
+  ISOMETRIES3 = Set{ISO0, ISO2, ISO4}
 
   class TestIsometry
     include Isometry
 
-    def initialize
+    def initialize(@increment = 0)
       @kind = IsometryKind::None
     end
 
     def transform(point : Point)
       new_coord = point.coordinates
-      new_coord.z += 3
+      new_coord.z += @increment
       p_new = point.clone
       p_new.coordinates = new_coord
       p_new
@@ -34,9 +34,9 @@ module Symm32
 
     def initialize
       @kind = IsometryKind::None
-      @isometries = [] of Isometry
-      @isometries << TestIsometry.new
-      @isometries << TestIsometry.new
+      @isometries = Set(Isometry).new
+      @isometries << TestIsometry.new(2)
+      @isometries << TestIsometry.new(3)
     end
   end
 end

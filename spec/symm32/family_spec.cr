@@ -5,7 +5,7 @@ module Symm32
     # Note, couldn't get before_each working properly
     # so dir1 and dir2 are recycled a bit awkwardly below
     it "classifies tetragonal families appropriately" do
-      dir1 = Direction.new(Axis::Z, [ISO1, ISO4] of Isometry)
+      dir1 = Direction.new(Axis::Z, [ISO1, ISO4])
       dir2 = Direction.new(Axis::T90, [ISO2] of Isometry)
       dir1.classification.should eq AxisKind::None
       Family::Tetragonal.classify_directions([dir1])

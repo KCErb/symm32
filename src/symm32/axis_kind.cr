@@ -1,13 +1,32 @@
 module Symm32
-  # see family.cr
-  # The 4 types of classification + 1 'none' for everything else
+  # The 4 types of axis classification + 'None' for everything else.
+  #
+  # Tetragonal and Hexagonal families have axial symmetry. Each isometry
+  # has an axis. Thus, members of these point groups can classify these
+  # axes (see `Axis`) or there `#directions` as either being `Axial`
+  # meaning parallel to that axis, or planar, meaning perpendicular to it.
+  #
+  # Likewise, the Cubic family groups can classify their axes as either
+  # being `OnAxes` meaning the axis passes through a face (on the cubic
+  # xyz axes) or `OffAxes` meaning they pass through something else
+  # like a diagonal or an edge.
+  #
+  # See also `Family`.
   enum AxisKind
-    None    # non-axial, non-cubic families have no special classifications
-    Axial   # in axial families, isometries in the z axis
-    Planar  # in axial families, isometries perp. to the z axis
-    OnAxes  # in cubic families, isometries on cubic axes (xyz)
-    OffAxes # in cubic families, isometries off cubic axes (everything else)
+    None
+    Axial
+    Planar
+    OnAxes
+    OffAxes
 
+    # Returns a string representing this classification
+    #
+    # ```
+    #   AxisKind::Axial # => |
+    #   AxisKind::Planar # => _
+    #   AxisKind::OnAxes # => +
+    #   AxisKind::OffAxes # => \
+    # ```
     def symbol
       case
       when axial?

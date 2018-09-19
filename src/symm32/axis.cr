@@ -1,6 +1,14 @@
-# This file uses the enum object pattern, see README
+# This file uses the `enum object pattern`
+# The enum `Axis` is an enum of Vector3 instances, these
+# instances are stored in the `Axes` module as module constants.
+#
+# I developed this pattern because I first created the Axes module
+# and slowly found myself implementing enum methods like `parse`
+# and the helper methods like `origin?`. This pattern is also a better
+# match for the underlying math: there are only a finite set of possible
+# crystallographic axes.
 module Symm32
-  # Special crystallographic axes
+  # :nodoc:
   module Axes
     Origin = Vector3.new(0, 0, 0)
     Z      = Vector3.new(0, 0, 1)
@@ -25,16 +33,88 @@ module Symm32
     D4 = Vector3.new(1, -1, 1).normalized
   end
 
-  # An enumerated list of objects (Vector3)
-  # the constants here forward method_missing to the constants in Axes
+  # An enumerated list of 17 crystallographic axes + the origin.
+  #
+  # These are enums, but they forward all methods to an underlying `Vector3` object.
+  # This way we can use enum methods like `parse` or `origin?` to treat
+  # this as a finite set of objects, but we can also call `Vector3` methods
+  # like `cross`. The result is that we can do math with these axes like so
+  #
+  # ```
+  # Axis::X.cross(Axis::Y) # => SymmUtil::Vector3(@x=0.0, @y=0.0, @z=1.0)
+  # ```
+  #
+  # There are many ways to name these axes. For convenience in writing and
+  # working with this program, I've chosen a set of names which I'll now
+  # explain carefully.
+  #
+  # ### Axis Names
+  #
+  # There are two ways of understanding the Axis names used in this program.
+  # One is to simply read the source of the `Axes` module (in `axis.cr`),
+  # I imagine that this method is sufficient for most physicists. The other
+  # is for me to try to explain it in text here.
+  #
+  # The names can be visualized by imagining a cube. We first designate
+  # the center of the cube as the `Origin`. All point isometries leave this point
+  # unchanged. Next we select an axis which passes through the origin and the
+  # center of a face) and call this the `Z` axis.
+  #
+  # Now, consider the (centered) plane perpendicular to this axis
+  # and call it `T` for transverse. `T0` is an axis in this plane which passes
+  # through the center of a face. This is now the reference axis for the others.
+  # `T30` will be an axis 30 degrees (counter-clockwise) from `T0`
+  # and still in the T plane, `T45` is 45 degrees from `T0` and so on.
+  # There are 8 of these.
+  #
+  # Next, looking down the z-axis (at the z-face) of the cube we would see a square.
+  # We orient this square so that the edge corresponding to the T0 face is
+  # on our right and the edge corresponding to T90 is on top. There are two
+  # more kinds of axes we are interested in, those which pass through the center
+  # of one of these 4 edges (as well as the `Origin`) and those which pass through
+  # one of the 4 diagonals (and the `Origin`).
+  #
+  # The center-edge axes we'll call "edge" axes, and number them `E1`, `E2`,
+  # `E3`, and `E4` with `E1` on our right (corresponding to the `T0` face), `E2`
+  # on top (corresponding to the `T90` face), `E3` is on the left and `E4` on
+  # the bottom.
+  #
+  # The diagonals are numbered `D1`, `D2` likewise, starting `D1` from the
+  # top-right corner (corresponding to the `T45` axis) and continuing
+  # counter-clockwise as before.
+  #
+  # Thus the enum is essentially this:
+  # ```
+  # enum Axis
+  #   Origin
+  #   Z
+  #   T0
+  #   T30
+  #   T45
+  #   T60
+  #   T90
+  #   T120
+  #   T135
+  #   T150
+  #   E1
+  #   E2
+  #   E3
+  #   E4
+  #   D1
+  #   D2
+  #   D3
+  #   D4
+  # end
+  # ```
   enum Axis
+    # The enum constants are just the constants in Axes (see above)
     {% for special_axis in Axes.constants %}
         {{special_axis.id}}
       {% end %}
 
-    # forward missing methods to Axes::constant
+    # Forwards missing methods to Axes::constant
     # if there are any args, convert all Axis enums to the
-    # underlying Axes delegate. This doens't handle named args or blocks etc.
+    # underlying Axes delegate. This doesn't handle named args or blocks.
     macro method_missing(call)
         case self
       {% for special_axis in Axes.constants %}
@@ -50,45 +130,53 @@ module Symm32
         {% end %}
       {% end %}
         else
-          raise "error impossible"
+          raise "enum object pattern failure"
         end
       end
 
+    # The underlying `Vector3` object of this Axis (enum).
     def delegate
       {% begin %}
-          case self
-        {% for special_axis in Axes.constants %}
-          when {{special_axis}}
-            Axes::{{special_axis}}
-        {% end %}
-          else
-            raise "error impossible"
-          end
-        {% end %}
+        case self
+          {% for special_axis in Axes.constants %}
+            when {{special_axis}}
+              Axes::{{special_axis}}
+          {% end %}
+        else
+          raise "enum object pattern failure"
+        end
+      {% end %}
     end
 
-    # delegate is the general name for the enum pattern here
-    # but coordinates is a nicer name when calling
+    # ditto
     def coordinates
       delegate
     end
 
+    # Is this Axis in the T-plane?
     def planar?
       plane.includes?(self)
     end
 
+    # Is this Axis an edge?
     def edge?
       {E1, E2, E3, E4}.includes?(self)
     end
 
+    # Is this Axis a diagonal?
     def diagonal?
       {D1, D2, D3, D4}.includes?(self)
     end
 
-    # array of axes orthogonal to this one
-    # the **order is very important**, it is used to infer the different planar
-    # orientations by assuming that they are in clockwise order with respect
-    # to the axis and some starting point.
+    # Array of axes orthogonal to this one.
+    #
+    # The order of the returned array was hand selected to be
+    # internally consistent. To reproduce, look down
+    # the axis and note the axes orthogonal to it.
+    # You'll find that they are not evenly distributed but rather
+    # clumped together, start with the "first" axis in that clump
+    # so that the largest gap between two axes would be traversed
+    # last going counter-clockwise around the axis.
     def orthogonal
       case
       when origin?
@@ -128,7 +216,7 @@ module Symm32
       when d4?
         [T45, E2, E3]
       else
-        raise "error impossible"
+        raise "enum object pattern failure"
       end
     end
 

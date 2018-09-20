@@ -1,4 +1,6 @@
 module Symm32
+  # Class for calculating the possible orientations of a child
+  # `PointGroup` within a parent `PointGroup`.
   class OrientationFactory
     getter child : PointGroup
     getter parent : PointGroup
@@ -9,6 +11,8 @@ module Symm32
       @child_plane = child.plane
     end
 
+    # Calculates the orientations of `#child` within `#parent`. Returns
+    # an array of `Orientation`s.
     def calculate_orientations
       return @orientations unless child.fits_within?(parent)
       child_z_direction = child.select_direction(Axis::Z)

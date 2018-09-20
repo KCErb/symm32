@@ -1,4 +1,12 @@
 module Symm32
+  # The [mirror](https://en.wikipedia.org/wiki/Reflection_(mathematics) operation.
+  #
+  # A mirror plane is specified by the axis normal to the plane.
+  #
+  # ```
+  # mirror_z = Symm32::Mirror.new(Axis::Z)
+  # ```
+
   class Mirror
     include Isometry
     getter axis
@@ -22,6 +30,11 @@ module Symm32
       @a_23 = -2*y*z
     end
 
+    # Reflect the point through the mirror plane.
+    #
+    # This method also calls
+    # `Point#invert_state` to allow the point to handle
+    # the reflection by some internal state.
     def transform(point : Point)
       tuple = {
         point.x * @a_11 + point.y * @a_12 + point.z * @a_13,

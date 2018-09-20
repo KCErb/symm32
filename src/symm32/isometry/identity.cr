@@ -1,4 +1,5 @@
 module Symm32
+  # The [identity](https://en.wikipedia.org/wiki/Identity_element) operation.
   class Identity
     include Isometry
 
@@ -6,6 +7,7 @@ module Symm32
       @kind = IsometryKind::Identity
     end
 
+    # Returns `point` unchanged
     def transform(point)
       point
     end

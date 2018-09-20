@@ -22,10 +22,10 @@ module Symm32
     # Returns a string representing this classification
     #
     # ```
-    #   AxisKind::Axial # => |
-    #   AxisKind::Planar # => _
-    #   AxisKind::OnAxes # => +
-    #   AxisKind::OffAxes # => \
+    # AxisKind::Axial   # => |
+    # AxisKind::Planar  # => _
+    # AxisKind::OnAxes  # => +
+    # AxisKind::OffAxes # => \
     # ```
     def symbol
       case

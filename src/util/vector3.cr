@@ -1,5 +1,7 @@
-# Borrowed largely from: https://github.com/unn4m3d/crystaledge/blob/master/src/crystaledge/vector3.cr
 module SymmUtil
+  # Simple library for working with 3-tuple vectors.
+  #
+  # Borrowed largely from: [crystaledge/vector3](https://github.com/unn4m3d/crystaledge/blob/master/src/crystaledge/vector3.cr)
   struct Vector3
     property x, y, z
 
@@ -59,6 +61,7 @@ module SymmUtil
       Vector3.new(self.x, self.y, self.z)
     end
 
+    # Rescales vector to magnitude 1.
     def normalize!
       m = magnitude
       unless m == 0
@@ -70,6 +73,7 @@ module SymmUtil
       self
     end
 
+    # Returns new vector with magnitude 1.
     def normalized
       clone.normalize!
     end
@@ -80,12 +84,16 @@ module SymmUtil
         (z - other.z).abs <= Float64::EPSILON
     end
 
+    # Determines if two vectors are within Float64 tolerance
+    # of eachother in all components.
     def close_to?(other : Vector3)
       (x - other.x).abs.round(Float64::DIGITS).zero? &&
         (y - other.y).abs.round(Float64::DIGITS).zero? &&
         (z - other.z).abs.round(Float64::DIGITS).zero?
     end
 
+    # Rounds all components by passing `arg` to `Float64#round`
+    # and returns new vector.
     def round(arg)
       x = @x.round(arg)
       y = @y.round(arg)
@@ -97,14 +105,17 @@ module SymmUtil
       self == self.class.new(0.0, 0.0, 0.0)
     end
 
+    # Uses close_to to determine if vector is zero.
     def nearly_zero?
       self.close_to? self.class.new(0.0, 0.0, 0.0)
     end
 
+    # Vector dot product
     def dot(other : Vector3)
       x*other.x + y*other.y + z*other.z
     end
 
+    # Vector cross product
     def cross(other : Vector3)
       Vector3.new(
         y*other.z - z*other.y,
@@ -117,6 +128,7 @@ module SymmUtil
       Math.sqrt(x**2 + y**2 + z**2)
     end
 
+    # Calculates angle between two vectors.
     def angle_from(other : Vector3)
       cos_theta = dot(other) / magnitude / other.magnitude
       Math.acos(cos_theta)

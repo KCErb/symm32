@@ -1,4 +1,5 @@
 module Symm32
+  # All of the crystallographic isometries as an enum.
   enum IsometryKind
     None
     Identity

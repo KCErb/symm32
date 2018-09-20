@@ -1,8 +1,12 @@
 require "./cardinality"
 
 module Symm32
-  # Store array of isometries in a "direction" which is the combined idea
-  # of isometry and axis.
+  # Store array of isometries in a "direction".
+  #
+  # The `Direction` object, therefore, is a container for understanding
+  # all isometries on the same axis. The family's axis classification goes
+  # here (see `AxisKind`) as `#classification`, and a `Set` is created
+  # which keeps all of the `IsometryKind`s on this axis (`#kinds`).
   class Direction
     include Cardinality(Direction)
 

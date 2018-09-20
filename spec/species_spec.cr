@@ -15,6 +15,7 @@ module Symm32
 
     it "has a name" do
       SPECIES[0].name.should eq "1. 1b > 1"
+      SPECIES[151].name.should eq "152. m3b > 3\\"
     end
 
     it "counts number of orientational domains correctly" do

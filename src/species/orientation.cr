@@ -115,7 +115,7 @@ module Symm32
     # Complete the correspondence between parent and child using an array of parent
     # directions which map to the child's planar directions. The `OrientationFactory`
     # is used for generating the `parent_plane` in a useful order.
-    # This method will mark an orientation as in_valid if the
+    # This method will mark an orientation as invalid if the
     # suggested mapping doesn't actually work.
     def complete(parent_plane)
       child_plane = child.plane

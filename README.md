@@ -34,18 +34,11 @@ this now adds the array `Symm32::SPECIES` and the helper methods `Symm32.species
 
 ### Documentation
 
-For further documentation, please see the docs. If you're new to Crystal, then let me be the first to tell you that Crystal has awesome support for automatic documentation generation. It generates documentation from code comments. So I've intentionally documented the code in-line to create nice docs. Please *do* give them a read!
+For further documentation, please see the docs. If you're new to Crystal, then let me be the first to tell you that Crystal has awesome support for automatic documentation generation! It generates documentation from code comments. So I've intentionally documented the code in-line to create nice docs. Please *do* give them a read.
 
 You can browse those docs by
 1. Generating them: `crystal docs` (see the *crystal* [docs](https://crystal-lang.org/docs/conventions/documenting_code.html#generate-documentation))
-2. Serving the root of the `docs` folder in this project.
-
-If you're new to serving local files to your browser, I recommend [serve](https://www.npmjs.com/package/serve) (you'll need to install [Node](https://nodejs.org/en/)). With `serve` you can browse the docs like so:
-
-```
-$ cd /path/to/symm32/docs
-$ serve
-```
+2. Opening `docs/index.html` with a web browser.
 
 ## Examples
 

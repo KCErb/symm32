@@ -32,13 +32,7 @@ require "symm32/species"
 
 this now adds the array `Symm32::SPECIES` and the helper methods `Symm32.species(num)` to get a species by number and `Symm32.species_for(parent)` for accessing the species where the point group `parent` is a parent.
 
-### Documentation
-
-For further documentation, please see the docs. If you're new to Crystal, then let me be the first to tell you that Crystal has awesome support for automatic documentation generation! It generates documentation from code comments. So I've intentionally documented the code in-line to create nice docs. Please *do* give them a read.
-
-You can browse those docs by
-1. Generating them: `crystal docs` (see the *crystal* [docs](https://crystal-lang.org/docs/conventions/documenting_code.html#generate-documentation))
-2. Opening `docs/index.html` with a web browser.
+For further documentation, please see [the docs](https://fzu-hlinka.gitlab.io/symm32).
 
 ## Examples
 

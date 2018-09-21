@@ -4,3 +4,14 @@ spec & format:
   script:
   - crystal spec
   - crystal tool format --check
+
+pages:
+  stage: deploy
+  script:
+  - crystal docs
+  - mv docs public
+  artifacts:
+    paths:
+    - public
+  only:
+  - master

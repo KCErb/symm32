@@ -2,7 +2,10 @@ name: symm32
 version: 0.1.0
 
 authors:
-  - KC Erb <iamkcerb@gmail.com>
+  - KC Erb <kcerb@fzu.cz>
+
+description: |
+  Symmetry exploration tools for the 32 crystallographic point groups, including Aizu species.
 
 crystal: 0.26.1
 

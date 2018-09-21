@@ -1,0 +1,5 @@
+image: "crystallang/crystal:latest"
+
+spec:
+  script:
+  - crystal spec

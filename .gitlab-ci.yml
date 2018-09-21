@@ -1,9 +1,6 @@
 image: "crystallang/crystal:latest"
 
-spec:
+spec & format:
   script:
   - crystal spec
-
-format:
-  script:
   - crystal tool format --check

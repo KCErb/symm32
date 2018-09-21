@@ -3,3 +3,7 @@ image: "crystallang/crystal:latest"
 spec:
   script:
   - crystal spec
+
+format:
+  script:
+  - crystal tool format --check

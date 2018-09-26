@@ -9,6 +9,7 @@ spec & format:
 pages:
   stage: deploy
   script:
+  - shards install
   - crystal docs -o public src/symm32.cr
   artifacts:
     paths:

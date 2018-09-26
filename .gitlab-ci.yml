@@ -9,7 +9,7 @@ spec & format:
 pages:
   stage: deploy
   script:
-  - crystal docs -o public
+  - crystal docs -o public src/symm32.cr
   artifacts:
     paths:
     - public

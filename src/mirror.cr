@@ -19,8 +19,20 @@ module Symm32
     @a_13 : Float64
     @a_23 : Float64
 
+    # Mirror through a plane described by its normal.
+    #
+    # The `axis` here is a point normal to the plane you want
+    # to mirror through.
+    #
+    # ```
+    # mirror = Mirror.new(Axis::Z)
+    # ```
+    #
+    # To obtain *the* singleton instance, use (for example)
+    # `PointIsometry#parse("mz")` which caches Isometry creation for this
+    # very purpose. (Think `Set`s.)
     def initialize(@axis : Axis)
-      @kind = IsometryKind::Mirror
+      @kind = :mirror
       x, y, z = @axis.values
       @a_11 = 1 - 2*x**2
       @a_22 = 1 - 2*y**2
@@ -32,9 +44,8 @@ module Symm32
 
     # Reflect the point through the mirror plane.
     #
-    # This method also calls
-    # `Point#invert_state` to allow the point to handle
-    # the reflection by some internal state.
+    # Also flips chirality of the point itself if it is chiral.
+    # (See `ChiralPoint`)
     def transform(point : Point)
       tuple = {
         point.x * @a_11 + point.y * @a_12 + point.z * @a_13,
@@ -44,7 +55,7 @@ module Symm32
       new_coords = Vector3.new(*tuple)
       p_new = point.clone
       p_new.coordinates = new_coords
-      p_new.invert_state
+      p_new.invert(:chirality)
       p_new
     end
   end

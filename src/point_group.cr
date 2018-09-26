@@ -1,21 +1,20 @@
+require "./axis"
+require "./axis_kind"
+require "./direction"
+require "./family"
+
 module Symm32
   # A [crystallographic point group](https://en.wikipedia.org/wiki/Crystallographic_point_group).
   # All 32 are created and stored in the `Symm32::POINT_GROUPS` constant.
   #
-  # A point group is a `Set` of `Isometry`s. It has a `Cardinality`
-  # and an array of `Direction`s. It also has a `Family`.
-  class PointGroup
+  # A point group extends a SymmGroup by including the notions of family
+  # and direction. See docs for `Family` and `Direction` for more info.
+  class PointGroup < SymmGroup
     getter family : Family
-    # Almost Hermann–Mauguin notation name. We just replace the overbar symbol
-    # with "b" to make ASCII friendly. Ex.: inversion group => 1b
-    getter name : String
-    getter isometries = Set(Isometry).new
-    include Cardinality(PointGroup)
     getter directions : Array(Direction)
 
     def initialize(@family, @name, isometries_arr)
-      isometries_arr.each { |iso| @isometries << iso }
-      @cardinality = init_cardinality
+      super(@name, isometries_arr)
       @directions = init_directions
       @family.classify_directions(@directions)
     end
@@ -26,13 +25,12 @@ module Symm32
     # you shouldn't need it.
     def self.parse(family, name, isometry_strings)
       isometries = [] of Isometry
-      isometry_strings.each { |iso_string| isometries << Isometry.parse(iso_string) }
+      isometry_strings.each { |iso_string| isometries << PointIsometry.parse(iso_string) }
       new(Family.parse(family), name, isometries)
     end
 
-    # Does this point group have the inversion operation?
     def inverse?
-      isometries.includes? Isometry::INVERSION
+      isometries.map(&.kind).includes? :inversion
     end
 
     # Returns an array of directions in the T-plane (see `Axis`).
@@ -48,11 +46,6 @@ module Symm32
     # Returns an array od Diagonal directions (see `Axis`).
     def diags
       select_directions([Axis::D1, Axis::D2, Axis::D3, Axis::D4])
-    end
-
-    # Returns the size of the isometries array.
-    def order
-      isometries.size
     end
 
     # Returns an array of isometries in a given axis.

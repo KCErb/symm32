@@ -36,7 +36,7 @@ module Symm32
   # An enumerated list of 17 crystallographic axes + the origin.
   #
   # These are enums, but they forward all methods to an underlying `Vector3` object.
-  # This way we can use enum methods like `parse` or `origin?` to treat
+  # This way, we can use `Enum` methods like `parse` or `origin?` to treat
   # this as a finite set of objects, but we can also call `Vector3` methods
   # like `cross`. The result is that we can do math with these axes like so
   #
@@ -58,7 +58,7 @@ module Symm32
   # The names can be visualized by imagining a cube. We first designate
   # the center of the cube as the `Origin`. All point isometries leave this point
   # unchanged. Next we select an axis which passes through the origin and the
-  # center of a face) and call this the `Z` axis.
+  # center of a face and call this the `Z` axis.
   #
   # Now, consider the (centered) plane perpendicular to this axis
   # and call it `T` for transverse. `T0` is an axis in this plane which passes
@@ -86,24 +86,24 @@ module Symm32
   # Thus the enum is essentially this:
   # ```
   # enum Axis
-  #   Origin
-  #   Z
-  #   T0
-  #   T30
-  #   T45
-  #   T60
-  #   T90
-  #   T120
-  #   T135
-  #   T150
-  #   E1
-  #   E2
-  #   E3
-  #   E4
-  #   D1
-  #   D2
-  #   D3
-  #   D4
+  #   Origin # => {0, 0, 0}
+  #   Z      # => {0, 0, 1}
+  #   T0     # => {1, 0, 0}
+  #   T30    # => {√3/2, 1/2, 0}
+  #   T45    # => {√2/2, √2/2, 0}
+  #   T60    # => {1/2, √3/2, 0}
+  #   T90    # => {0, 1, 0}
+  #   T120   # => {-1/2, √3/2, 0}
+  #   T135   # => {-√2/2, √2/2, 0}
+  #   T150   # => {-√3/2, 1/2, 0}
+  #   E1     # => {1, 0, 1}
+  #   E2     # => {0, 1, 1}
+  #   E3     # => {-1, 0, 1}
+  #   E4     # => {0, -1, 1}
+  #   D1     # => {1, 1, 1}
+  #   D2     # => {-1, 1, 1}
+  #   D3     # => {-1, -1, 1}
+  #   D4     # => {1, -1, 1}
   # end
   # ```
   enum Axis

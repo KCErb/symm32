@@ -1,8 +1,6 @@
 module Symm32
-  # Provides a common type for isometries. See the "Direct including types" documentation for specific instances.
-  module Isometry
-    getter kind : IsometryKind
-
+  module PointIsometry
+    # Re: PossibleIsometries
     # This shouldn't be necessary but I seem to be getting a bug when
     # saying that the @@instances hash should hold values of type
     # "Isometry" like this:
@@ -10,17 +8,9 @@ module Symm32
     # but the bug is gone if I limit the set like so:
 
     # :nodoc:
-    alias PossibleIsometries = Identity |
-                               ImproperRotation | Inversion | Mirror | Rotation
+    alias PossibleIsometries = Identity | Inversion | Rotation | Mirror |
+                               ImproperRotation
     @@instances = Hash(String, PossibleIsometries).new
-
-    abstract def transform(point : Point) : Point
-
-    # A convenience wrapper to `transform(Point)` which accepts
-    # a set of points instead of a single point.
-    def transform(points : Set(Point))
-      points.map { |point| transform(point) }.to_set
-    end
 
     # Create isometry from 'minimal' string specification.
     #
@@ -63,9 +53,9 @@ module Symm32
       # if not already in instances, add to instances keyed by name string
       kind, _, power = name_string.partition("^")
       if kind == "e"
-        result = IDENTITY
+        result = Identity.new
       elsif kind == "i"
-        result = INVERSION
+        result = Inversion.new
       else
         bar = kind[0] == '-'
         axis = parse_axis(kind, bar)

@@ -3,8 +3,11 @@ module Symm32
   class Identity
     include Isometry
 
+    # Creates new instance of the Identity isometry. To obtain the singleton
+    # instance of this class, use `PointIsometry#parse("e")` which
+    # caches Isometry creation for this purpose.
     def initialize
-      @kind = IsometryKind::Identity
+      @kind = :identity
     end
 
     # Returns `point` unchanged
@@ -12,6 +15,4 @@ module Symm32
       point
     end
   end
-
-  Isometry::IDENTITY = Identity.new
 end

@@ -1,13 +1,15 @@
-require "./util/**"
-require "./symm32/**"
+require "symm_base"
 
-# Module for working with the 32 crystallographic point groups
-#
-# At the moment, the focus is on their group > subgroup relationships, i.e.
-# the 212 non-magnetic species.
 module Symm32
-  include SymmUtil # include Vector3 and other utils used throughout
+  VERSION = "1.0.0"
 
+  include SymmBase
+end
+
+require "./*"
+
+# Module / namespace for working with the 32 crystallographic point groups.
+module Symm32
   # Helper methods for working with the point groups
   def self.point_group(name)
     POINT_GROUPS.find { |group| group.name == name }.not_nil!

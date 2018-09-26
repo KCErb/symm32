@@ -10,13 +10,6 @@ module Symm32
         pg2m.name.should eq "2/m"
       end
 
-      it "has cardinality" do
-        pg2m.cardinality[IsometryKind::Mirror].should eq 1
-        pg2m.cardinality[IsometryKind::Identity].should eq 1
-        pg2m.cardinality[IsometryKind::Rotation2].should eq 1
-        pg2m.cardinality[IsometryKind::Inversion].should eq 1
-      end
-
       it "has 1 direction" do
         pg2m.directions.size.should eq 1
       end

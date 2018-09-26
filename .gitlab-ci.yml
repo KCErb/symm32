@@ -2,6 +2,7 @@ image: "crystallang/crystal:latest"
 
 spec & format:
   script:
+  - shards install
   - crystal spec
   - crystal tool format --check
 

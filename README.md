@@ -24,7 +24,7 @@ This gives you access to `Symm32::POINT_GROUPS` an array of the 32 point groups,
 
 ## Examples
 
-For examples of this library in action, have a look at the [SymmSpecies](https://crystal-symmetry.gitlab.io/symm_species) shard or the following projects (crystal "app"s). If you'd like to add your project to this list please open an issue or submit a pull request (see **Contributing** below).
+For examples of this library in action, have a look at the [SymmSpecies](https://crystal-symmetry.gitlab.io/symm_species) shard or the following projects. If you'd like to add your project to this list please open an issue or submit a pull request (see **Contributing** below).
 
 * [Limit Groups](https://gitlab.com/crystal-symmetry/limit_groups)
 * [Hasse](https://gitlab.com/crystal-symmetry/hasse)

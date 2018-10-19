@@ -2,7 +2,7 @@ module Symm32
   # The [improper rotation](https://en.wikipedia.org/wiki/Improper_rotation) operation.
   #
   # Rotate a point about an axis and invert. This is
-  # a `CompoundIsometry` so it's transform method
+  # a `CompoundIsometry` so its transform method
   # is a combination of `Rotation` and `Inversion`.
   class ImproperRotation
     include CompoundIsometry

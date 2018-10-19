@@ -66,7 +66,6 @@ module Symm32
                  end
       end
       @@instances[name_string] = result
-      result
     end
 
     private def self.parse_axis(direction, bar)

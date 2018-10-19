@@ -19,7 +19,7 @@ module Symm32
     @a_13 : Float64
     @a_23 : Float64
 
-    # Mirror through a plane described by its normal.
+    # Creates new instance of the `Mirror` isometry.
     #
     # The `axis` here is a point normal to the plane you want
     # to mirror through.

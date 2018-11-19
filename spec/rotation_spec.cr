@@ -16,11 +16,5 @@ module Symm32
       ans = ChiralPoint.new(ans_vec)
       res.should eq ans
     end
-
-    it "transforms vector at an arbitrary angle" do
-      rot = Rotation.new(Axis::E2, Math::PI)
-      vec = Vector3.new(0, 0, 1)
-      rot.transform(vec).should eq Vector3.new(0, 1, 0)
-    end
   end
 end

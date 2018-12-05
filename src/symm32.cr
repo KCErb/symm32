@@ -24,7 +24,7 @@ module Symm32
       PointGroup.parse("monoclinic", "m", ["e", "mz"]),
       PointGroup.parse("monoclinic", "2/m", ["e", "2z", "i", "mz"]),
       PointGroup.parse("orthorhombic", "222", ["e", "2z", "2t0", "2t90"]),
-      PointGroup.parse("orthorhombic", "mm2", ["e", "2z", "mt0", "mt90"]),
+      PointGroup.parse("orthorhombic", "2mm", ["e", "2z", "mt0", "mt90"]),
       PointGroup.parse("orthorhombic", "mmm", ["e", "2z", "2t0", "2t90", "i", "mz", "mt0", "mt90"]),
       PointGroup.parse("tetragonal", "4", ["e", "4z", "2z", "4z^3"]),
       PointGroup.parse("tetragonal", "4b", ["e", "-4z", "2z", "-4z^3"]),

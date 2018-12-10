@@ -56,7 +56,7 @@ module Symm32
     # Finds the first direction that is parallel to coordinates.
     def select_direction(coords : Vector3)
       directions.find do |dir|
-        dir.axis.cross(coords).zero?
+        dir.axis.cross(coords).nearly_zero?
       end
     end
 

@@ -28,18 +28,15 @@ module Symm32
     # AxisKind::OffAxes # => \
     # ```
     def symbol
-      case
-      when axial?
-        "|"
-      when planar?
-        "_"
-      when on_axes?
-        "+"
-      when off_axes?
-        "\\"
-      else
-        ""
-      end
+      AXIS_KIND_SYMBOLS[self]
     end
   end
+
+  AXIS_KIND_SYMBOLS = {
+    AxisKind::None    => "",
+    AxisKind::Axial   => "|",
+    AxisKind::Planar  => "_",
+    AxisKind::OnAxes  => "+",
+    AxisKind::OffAxes => "\\",
+  }
 end

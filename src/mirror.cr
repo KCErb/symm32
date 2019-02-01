@@ -8,7 +8,7 @@ module Symm32
   # ```
 
   class Mirror
-    include Isometry
+    include SymmBase::Isometry
     getter axis
 
     # Creates new instance of the `Mirror` isometry.
@@ -25,14 +25,14 @@ module Symm32
     # very purpose. (Think `Set`s.)
     def initialize(@axis : Axis)
       @kind = :mirror
-      @matrix = ReflectionMatrix.new(axis.coordinates)
+      @matrix = SymmBase::ReflectionMatrix.new(axis.coordinates)
     end
 
     # Reflect the point through the mirror plane.
     #
     # Also flips chirality of the point itself if it is chiral.
     # (See `ChiralPoint`)
-    def transform(point : Point)
+    def transform(point : SymmBase::Point)
       p_new = point.clone
       p_new.coordinates = @matrix * point.coordinates
       p_new.invert(:chirality)

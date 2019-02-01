@@ -9,7 +9,7 @@ module Symm32
   #
   # A point group extends a SymmGroup by including the notions of family
   # and direction. See docs for `Family` and `Direction` for more info.
-  class PointGroup < SymmGroup
+  class PointGroup < SymmBase::SymmGroup
     getter family : Family
     getter directions : Array(Direction)
 
@@ -24,7 +24,7 @@ module Symm32
     # This method is primarily used by POINT_GROUPS constant
     # you shouldn't need it.
     def self.parse(family, name, isometry_strings)
-      isometries = [] of Isometry
+      isometries = [] of SymmBase::Isometry
       isometry_strings.each { |iso_string| isometries << PointIsometry.parse(iso_string) }
       new(Family.parse(family), name, isometries)
     end
@@ -71,6 +71,14 @@ module Symm32
       res = directions.select { |d| plane.includes?(d.axis) }
       # sort according to axis order
       res.sort_by { |d| plane.index(d.axis).not_nil! }
+    end
+
+    def to_s(io)
+      io << "#<PointGroup @family=\"#{family}\" @name=\"#{name}\" >"
+    end
+
+    def inspect(io)
+      to_s(io)
     end
 
     private def init_directions

@@ -1,7 +1,7 @@
 module Symm32
   # The [inversion operation](https://en.wikipedia.org/wiki/Point_reflection).
   class Inversion
-    include Isometry
+    include SymmBase::Isometry
 
     # Creates new instance of the Inversion isometry. To obtain the singleton
     # instance of this class, use `PointIsometry#parse("i")` which
@@ -15,7 +15,7 @@ module Symm32
     # This method both inverts the coordinates of
     # the point (xyz => -x-y-z) and the chirality
     # of the point itself if it is chiral. (See `ChiralPoint`)
-    def transform(point : Point)
+    def transform(point : SymmBase::Point)
       p_new = point.clone
       p_new.coordinates = -point.coordinates
       p_new.invert(:chirality)

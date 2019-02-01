@@ -10,7 +10,7 @@ module Symm32
   class Direction
     getter axis : Axis
     getter kinds : Set(Symbol)
-    getter isometries = Set(Isometry).new
+    getter isometries = Set(SymmBase::Isometry).new
     property classification : AxisKind
 
     def initialize(@axis, isometries_arr)

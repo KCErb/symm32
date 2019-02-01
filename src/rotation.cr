@@ -2,7 +2,7 @@ module Symm32
   # The [rotation operation](https://en.wikipedia.org/wiki/Rotation_(mathematics%29)
   #
   class Rotation
-    include Isometry
+    include SymmBase::Isometry
     getter angle : Float64
     getter axis : Axis
 
@@ -25,12 +25,12 @@ module Symm32
     def initialize(@axis, n_fold : Int32, power = 1)
       @kind = init_kind(n_fold, power)
       @angle = 2 * Math::PI / n_fold * power
-      @matrix = RotationMatrix.new(axis.coordinates, angle)
+      @matrix = SymmBase::RotationMatrix.new(axis.coordinates, angle)
     end
 
     # Transforms the coordinates of point by rotating them
     # around `axis` by `angle`.
-    def transform(point : Point)
+    def transform(point : SymmBase::Point)
       p_new = point.clone
       p_new.coordinates = @matrix * point.coordinates
       p_new

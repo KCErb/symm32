@@ -7,7 +7,7 @@ module Symm32
   #
   # The purpose of this point is to pair with the `Mirror` and `Inversion`
   # isometries which invert the chirality of the objects they act on.
-  struct ChiralPoint < Point
+  struct ChiralPoint < SymmBase::Point
     # The so-called `internal-state` of this point.
     getter chirality : Chirality
 

@@ -5,7 +5,7 @@ module Symm32
   # a `CompoundIsometry` so its transform method
   # is a combination of `Rotation` and `Inversion`.
   class ImproperRotation
-    include CompoundIsometry
+    include SymmBase::CompoundIsometry
     getter axis
 
     # Creates new instance of the ImproperRotation isometry.
@@ -23,7 +23,7 @@ module Symm32
     # very purpose. (Think `Set`s.)
     def initialize(@axis : Axis, n_fold : Int32, power = 1)
       @kind = init_kind(n_fold, power)
-      @isometries = Set(Isometry).new
+      @isometries = Set(SymmBase::Isometry).new
       @isometries << Rotation.new(@axis, n_fold, power)
       @isometries << PointIsometry.parse("i")
     end

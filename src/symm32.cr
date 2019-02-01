@@ -1,19 +1,34 @@
 require "symm_base"
-
-module Symm32
-  VERSION = "2.0.0"
-
-  include SymmBase
-end
-
 require "./*"
 
 # Module / namespace for working with the 32 crystallographic point groups.
 module Symm32
+  VERSION = "2.0.0"
+
   # Helper methods for working with the point groups
   def self.point_group(name)
-    POINT_GROUPS.find { |group| group.name == name }.not_nil!
+    standard_name = standardize(name)
+    POINT_GROUPS.find { |group| group.name == standard_name }.not_nil!
   end
+
+  # mapping of alternate names to our system
+  def self.standardize(name : String)
+    if STANDARD_NAMES.includes?(name)
+      standard_name = name
+    else
+      standard_name = NON_STANDARD_NAMES[name]?
+      raise "Non-standard name `#{name}` could not be standardized." unless standard_name
+    end
+    standard_name
+  end
+
+  # map of non-standard names to standard
+  NON_STANDARD_NAMES = {
+    "mm2" => "2mm",
+    "m2m" => "2mm",
+    "4bm2" => "4b2m",
+    "6b2m" => "6bm2"
+  }
 
   # This is the big important constant of this module!
   POINT_GROUPS =
@@ -129,4 +144,6 @@ module Symm32
         ]
       ),
     ]
+
+    STANDARD_NAMES = POINT_GROUPS.map(&.name)
 end

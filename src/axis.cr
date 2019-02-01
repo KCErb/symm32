@@ -8,6 +8,7 @@
 # match for the underlying math: there are only a finite set of possible
 # crystallographic axes.
 module Symm32
+  alias Vector3 = SymmBase::Vector3
   # :nodoc:
   module Axes
     Origin = Vector3.new(0, 0, 0)
@@ -26,7 +27,7 @@ module Symm32
     E2 = Vector3.new(0, 1, 1).normalized
     E3 = Vector3.new(-1, 0, 1).normalized
     E4 = Vector3.new(0, -1, 1).normalized
-    # diagonals are counted similarly, clockwise starting from x direction looking down z
+    # diagonals are also counted clockwise starting from x-direction looking down z
     D1 = Vector3.new(1, 1, 1).normalized
     D2 = Vector3.new(-1, 1, 1).normalized
     D3 = Vector3.new(-1, -1, 1).normalized

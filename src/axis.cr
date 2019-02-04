@@ -9,6 +9,7 @@
 # crystallographic axes.
 module Symm32
   alias Vector3 = SymmBase::Vector3
+
   # :nodoc:
   module Axes
     Origin = Vector3.new(0, 0, 0)

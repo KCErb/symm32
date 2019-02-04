@@ -24,10 +24,10 @@ module Symm32
 
   # map of non-standard names to standard
   NON_STANDARD_NAMES = {
-    "mm2" => "2mm",
-    "m2m" => "2mm",
+    "mm2"  => "2mm",
+    "m2m"  => "2mm",
     "4bm2" => "4b2m",
-    "6b2m" => "6bm2"
+    "6b2m" => "6bm2",
   }
 
   # This is the big important constant of this module!
@@ -145,5 +145,5 @@ module Symm32
       ),
     ]
 
-    STANDARD_NAMES = POINT_GROUPS.map(&.name)
+  STANDARD_NAMES = POINT_GROUPS.map(&.name)
 end

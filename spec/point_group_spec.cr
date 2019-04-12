@@ -107,6 +107,11 @@ module Symm32
         it "rot2t30 * rot3 = 2t150" do
           pg32.product(rot2t30, rot3).should eq rot2t150
         end
+
+        # paranoid, checking order of ops for array input of product
+        it "rot2t30 * rot3 = 2t150" do
+          pg32.product([rot2t150, rot2t30, rot3]).should eq identity
+        end
       end
     end
   end

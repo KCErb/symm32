@@ -36,6 +36,10 @@ module Symm32
       p_new
     end
 
+    def transform(vectorlike : SymmBase::Vectorlike)
+      @matrix * vectorlike
+    end
+
     private def init_kind(n_fold, power)
       case n_fold
       when 2

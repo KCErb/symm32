@@ -38,5 +38,9 @@ module Symm32
       p_new.invert(:chirality)
       p_new
     end
+
+    def transform(vectorlike : SymmBase::Vectorlike)
+      @matrix * vectorlike
+    end
   end
 end

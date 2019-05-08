@@ -21,5 +21,9 @@ module Symm32
       p_new.invert(:chirality)
       p_new
     end
+
+    def transform(vectorlike : SymmBase::Vectorlike)
+      {-vectorlike[0], -vectorlike[1], -vectorlike[2]}
+    end
   end
 end

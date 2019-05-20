@@ -16,5 +16,13 @@ module Symm32
       ans.invert(:chirality)
       inversion.transform(point).should eq ans
     end
+
+    it "inverts vectorlike" do
+      inversion.transform({1, 2, 3}).should eq({-1, -2, -3})
+    end
+
+    it "does not invert vectorlike if chiral" do
+      inversion.transform({1, 2, 3}, [:chiral]).should eq({1, 2, 3})
+    end
   end
 end

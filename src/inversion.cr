@@ -22,8 +22,14 @@ module Symm32
       p_new
     end
 
-    def transform(vectorlike : SymmBase::Vectorlike)
-      {-vectorlike[0], -vectorlike[1], -vectorlike[2]}
+    # Allow the vectorlike to be "chiral" in that it is unchanged by
+    # inversion
+    def transform(vectorlike : SymmBase::Vectorlike, invert = [] of Symbol)
+      if invert.includes? :chiral
+        {vectorlike[0], vectorlike[1], vectorlike[2]}
+      else
+        {-vectorlike[0], -vectorlike[1], -vectorlike[2]}
+      end
     end
   end
 end

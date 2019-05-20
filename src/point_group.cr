@@ -171,7 +171,7 @@ module Symm32
       suffix = match[2]
       n_fold = suffix[0].to_i
       power = suffix.size > 1 ? suffix[2].to_i : 1
-      { base: match[1], n_fold: n_fold, power: power}
+      {base: match[1], n_fold: n_fold, power: power}
     end
   end
 end

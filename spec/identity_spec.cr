@@ -13,5 +13,9 @@ module Symm32
       point = ChiralPoint.new(vec)
       identity.transform(point).should eq point
     end
+
+    it "doesn't mind being handed a chiral vectorlike" do
+      identity.transform({1, 0, 0}, [:chiral]).should eq({1, 0, 0})
+    end
   end
 end

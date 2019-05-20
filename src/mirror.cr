@@ -39,8 +39,14 @@ module Symm32
       p_new
     end
 
-    def transform(vectorlike : SymmBase::Vectorlike)
-      @matrix * vectorlike
+    # Allow the vectorlike to be "chiral" in that we give the additive inverse
+    # under reflection
+    def transform(vectorlike : SymmBase::Vectorlike, invert = [] of Symbol)
+      new_vec = @matrix * vectorlike
+      if invert.includes? :chiral
+        new_vec = {-new_vec[0], -new_vec[1], -new_vec[2]}
+      end
+      new_vec
     end
   end
 end

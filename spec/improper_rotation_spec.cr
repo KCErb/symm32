@@ -19,14 +19,14 @@ module Symm32
     end
 
     it "transforms vectorlike given n-fold + power" do
-      res = ir.transform([1, 0, 0])
+      res = ir.transform({1, 0, 0})
       res[0].should be_close(0.5, 2*Float64::EPSILON)
       res[1].should be_close(Math.sqrt(3)/2, Float64::EPSILON)
       res[2].should eq 0
     end
 
     it "transforms and inverts chiral vectorlike given n-fold + power" do
-      res = ir.transform([1, 0, 0], [:chiral])
+      res = ir.transform({1, 0, 0}, [:chiral])
       res[0].should be_close(-0.5, 2*Float64::EPSILON)
       res[1].should be_close(-Math.sqrt(3)/2, Float64::EPSILON)
       res[2].should eq 0

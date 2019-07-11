@@ -13,7 +13,7 @@ module Symm32
 
   # :nodoc:
   module Axes
-    Origin = Vector3.new(0, 0, 0)
+    ORIGIN = Vector3.new(0, 0, 0)
     Z      = Vector3.new(0, 0, 1)
     # plane perpendicular to z
     T0   = Vector3.new(1, 0, 0)
@@ -59,7 +59,7 @@ module Symm32
   # is for me to try to explain it in text here.
   #
   # The names can be visualized by imagining a cube. We first designate
-  # the center of the cube as the `Origin`. All point isometries leave this point
+  # the center of the cube as the `ORIGIN`. All point isometries leave this point
   # unchanged. Next we select an axis which passes through the origin and the
   # center of a face and call this the `Z` axis.
   #
@@ -74,8 +74,8 @@ module Symm32
   # We orient this square so that the edge corresponding to the T0 face is
   # on our right and the edge corresponding to T90 is on top. There are two
   # more kinds of axes we are interested in, those which pass through the center
-  # of one of these 4 edges (as well as the `Origin`) and those which pass through
-  # one of the 4 diagonals (and the `Origin`).
+  # of one of these 4 edges (as well as the `ORIGIN`) and those which pass through
+  # one of the 4 diagonals (and the `ORIGIN`).
   #
   # The center-edge axes we'll call "edge" axes, and number them `E1`, `E2`,
   # `E3`, and `E4` with `E1` on our right (corresponding to the `T0` face), `E2`
@@ -89,7 +89,7 @@ module Symm32
   # Thus the enum is essentially this:
   # ```
   # enum Axis
-  #   Origin # => {0, 0, 0}
+  #   ORIGIN # => {0, 0, 0}
   #   Z      # => {0, 0, 1}
   #   T0     # => {1, 0, 0}
   #   T30    # => {√3/2, 1/2, 0}

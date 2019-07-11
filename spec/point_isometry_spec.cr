@@ -20,7 +20,7 @@ module Symm32
 
     it "is not created from an invalid string (general)" do
       expect_raises(ArgumentError) do
-        iso = PointIsometry.parse("foos")
+        PointIsometry.parse("foos")
       end
     end
   end

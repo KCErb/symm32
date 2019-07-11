@@ -71,7 +71,7 @@ module Symm32
     private def self.parse_axis(direction, bar)
       # remove kind => mt30 => t30, -4z => z
       direction = bar ? direction[2..-1] : direction[1..-1]
-      return Axis::Origin if direction == "" # e and i have no axis
+      return Axis::ORIGIN if direction == "" # e and i have no axis
 
       dir_char = direction[0]
       return Axis::Z if dir_char == 'z'

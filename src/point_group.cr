@@ -108,9 +108,9 @@ module Symm32
     end
 
     private def init_directions
-      by_axis = isometries.group_by { |iso| iso.responds_to?(:axis) ? iso.axis : Axis::Origin }
+      by_axis = isometries.group_by { |iso| iso.responds_to?(:axis) ? iso.axis : Axis::ORIGIN }
       dirs = by_axis.compact_map do |axis, iso_arr|
-        next if axis == Axis::Origin
+        next if axis == Axis::ORIGIN
         Direction.new(axis, iso_arr)
       end
       dirs.sort_by(&.axis)
@@ -162,7 +162,6 @@ module Symm32
       end
 
       # fill the table with results from the map
-      size = isometries.size
       @multiplication_table = Hash2DIsometry.new
       isometries.each do |inv_row_iso|
         row_iso = @inverses_hash[inv_row_iso]

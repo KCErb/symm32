@@ -7,10 +7,12 @@ module Symm32
   # A [crystallographic point group](https://en.wikipedia.org/wiki/Crystallographic_point_group).
   # All 32 are created and stored in the `Symm32::POINT_GROUPS` constant.
   #
-  # A point group extends a SymmGroup by including the notions of family
-  # and direction. See docs for `Family` and `Direction` for more info.
+  # A point group extends a `SymmBase::SymmGroup` by including the notions of `family`
+  # and `directions`. See docs for `Family` and `Direction` for more info.
   class PointGroup < SymmBase::SymmGroup
+    # The crystal `Family` this group belongs to.
     getter family : Family
+    # Returns an array of `Direction` objects. One for each of the axes in this group.
     getter directions : Array(Direction)
 
     private alias IsoHash = Hash(SymmBase::Isometry, SymmBase::Isometry)
@@ -37,15 +39,20 @@ module Symm32
       new(Family.parse(family), name, isometries)
     end
 
-    # left action convention means product(iso1, iso2) => apply iso2 and then apply iso1
+    # Returns the isometry that is the product of `iso1` and `iso2` in terms of the
+    # group's multiplication table.
+    #
+    # Left action convention means `product(iso1, iso2)` will apply `iso2` and then apply `iso1`.
     def product(iso1, iso2)
       @multiplication_table[iso1][iso2]
     end
 
+    # Returns the inverse isometry of `iso` with respect to the multiplication table of this group.
     def inverse(iso)
       @inverses_hash[iso]
     end
 
+    # Returns boolean indicating if this group includes the `Inversion` isometry.
     def centrosymmetric?
       isometries.map(&.kind).includes? :inversion
     end
@@ -60,7 +67,7 @@ module Symm32
       select_directions([Axis::E1, Axis::E2, Axis::E3, Axis::E4])
     end
 
-    # Returns an array od Diagonal directions (see `Axis`).
+    # Returns an array of Diagonal directions (see `Axis`).
     def diags
       select_directions([Axis::D1, Axis::D2, Axis::D3, Axis::D4])
     end
@@ -90,10 +97,12 @@ module Symm32
       res.sort_by { |d| plane.index(d.axis).not_nil! }
     end
 
+    # :nodoc:
     def to_s(io)
       io << "#<PointGroup @family=\"#{family}\" @name=\"#{name}\" >"
     end
 
+    # :nodoc:
     def inspect(io)
       to_s(io)
     end
@@ -136,9 +145,10 @@ module Symm32
     #    Therefore, the product of 3 * 2_T30 for example in PG 32 is 2_T90 instead of
     #    2_T150 which we'd get from a clockwise rotation or passive rotation as seems
     #    to be common in the chemistry references I've seen.
-    private POLAR         = Math::PI/2 - Math::PI/23
-    private AZIMUTHAL     = Math::PI/2 - Math::PI/17
-    private COORDS        = SymmBase::Vector3.new(POLAR, AZIMUTHAL)
+    private POLAR     = Math::PI/2 - Math::PI/23
+    private AZIMUTHAL = Math::PI/2 - Math::PI/17
+    private COORDS    = SymmBase::Vector3.new(POLAR, AZIMUTHAL)
+    # :nodoc:
     GENERAL_POINT = ChiralPoint.new(COORDS)
 
     private def init_multiplication_table

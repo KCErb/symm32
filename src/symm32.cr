@@ -5,13 +5,23 @@ require "./*"
 module Symm32
   VERSION = "2.0.0"
 
-  # Helper methods for working with the point groups
+  # Find a particular point group in the `POINT_GROUPS` array by name.
+  #
+  # The names used here are nearly Hermann-Mauguin, except that "bar" is given as a
+  # lower-case `b`. Thus point group "4 bar" (or "bar 4" depending on your dialect) will
+  # be given by `Symm32.point_group("4b")`. Division or "over" is given by a forward
+  # slash so that point group "2 over m" is given by `Symm32.point_group("2/m")`.
+  #
+  # A complete list of the strings used here to identify the point groups can be determined
+  # by looking at the `POINT_GROUPS` array.
   def self.point_group(name)
     standard_name = standardize(name)
     POINT_GROUPS.find { |group| group.name == standard_name }.not_nil!
   end
 
-  # mapping of alternate names to our system
+  # Convert a point group name to one of the 32 used here. For example, we use "2mm" instead
+  # "mm2" in the `POINT_GROUPS` array so this method is used within `#point_group` to reduce
+  # friction. If there are variants we've missed, this is the place to add support for them.
   def self.standardize(name : String)
     if STANDARD_NAMES.includes?(name)
       standard_name = name
@@ -22,7 +32,7 @@ module Symm32
     standard_name
   end
 
-  # map of non-standard names to standard
+  # :nodoc:
   NON_STANDARD_NAMES = {
     "mm2"  => "2mm",
     "m2m"  => "2mm",
@@ -30,7 +40,8 @@ module Symm32
     "6b2m" => "6bm2",
   }
 
-  # This is the big important constant of this module!
+  # Array of the 32 crystallographic point groups. Use this array to guarantee
+  # object identity when comparing point groups and to iterate over them.
   POINT_GROUPS =
     [
       PointGroup.parse("triclinic", "1", ["e"]),
@@ -145,5 +156,6 @@ module Symm32
       ),
     ]
 
+  # An array of the strings used to identify the point groups in `POINT_GROUPS`.
   STANDARD_NAMES = POINT_GROUPS.map(&.name)
 end

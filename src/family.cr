@@ -2,8 +2,8 @@ module Symm32
   # The primary purpose of this enum is to classify isometries
   # in a group according to the summit of the family, for example
   # in the tetragonal group, we can classify the 2-fold axis
-  # of group 4 as 2-axial because in 4/mmm there is also
-  # 2-planar. This is important for species distinctions. (See `#classify_directions` for more info.)
+  # of group `4` as 2-axial because in the summit `4/mmm` there is also
+  # 2-planar. (See `#classify_directions` for more info.)
   enum Family
     Triclinic
     Monoclinic

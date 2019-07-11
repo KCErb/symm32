@@ -3,9 +3,10 @@ module Symm32
   class Inversion
     include SymmBase::Isometry
 
-    # Creates new instance of the Inversion isometry. To obtain the singleton
-    # instance of this class, use `PointIsometry#parse("i")` which
-    # caches Isometry creation for this purpose.
+    # Creates new instance of the `Inversion` isometry.
+    #
+    # To obtain the singleton instance of this class, use `PointIsometry#parse("i")`
+    # which caches Isometry creation for this purpose.
     def initialize
       @kind = :inversion
     end
@@ -22,8 +23,10 @@ module Symm32
       p_new
     end
 
-    # Allow the vectorlike to be "chiral" in that it is unchanged by
-    # inversion
+    # Invert a [Vectorlike](https://crystal-symmetry.gitlab.io/symm_base/SymmBase/Vectorlike.html) object through the origin.
+    #
+    # The `invert` argument allows the vectorlike to be "chiral" in that it is returned
+    # unchanged.
     def transform(vectorlike : SymmBase::Vectorlike, invert = [] of Symbol)
       if invert.includes? :chiral
         {vectorlike[0], vectorlike[1], vectorlike[2]}

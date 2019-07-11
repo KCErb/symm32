@@ -18,7 +18,7 @@ module Symm32
     # set of these and we'd like to use set theoretical concepts
     # when working with them.
     #
-    # The name_string is a position-dependent string of numbers, letters,
+    # The `name_string` is a position-dependent string of numbers, letters,
     # and symbols which uniquely identifies an isometry. This was created
     # primarily for internal use, but I'll explain the scheme in case it
     # is useful externally for quickly creating an array of isometries.
@@ -27,7 +27,7 @@ module Symm32
     #
     # For example the string `-3d2^2` indicates a 3-fold improper rotation
     # (-3) about the 2nd diagonal (d2 - see `Axis` for the axis naming scheme)
-    # which should be a two-fold rotation (^2).
+    # which should be repeated twice (^2).
     #
     # Here's an ASCII guide:
     # ```text

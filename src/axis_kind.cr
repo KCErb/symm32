@@ -4,7 +4,7 @@ module Symm32
   # Tetragonal and Hexagonal families have axial symmetry. Each isometry
   # has an axis. Thus, members of these point groups can classify these
   # axes (see `Axis`) or there `#directions` as either being `Axial`
-  # meaning parallel to that axis, or planar, meaning perpendicular to it.
+  # meaning parallel to that axis, or `Planar`, meaning perpendicular to it.
   #
   # Likewise, the Cubic family groups can classify their axes as either
   # being `OnAxes` meaning the axis passes through a face (on the cubic

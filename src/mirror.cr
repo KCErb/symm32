@@ -1,12 +1,11 @@
 module Symm32
   # The [mirror](https://en.wikipedia.org/wiki/Reflection_(mathematics) operation.
   #
-  # A mirror plane is specified by the axis normal to the plane.
+  # A mirror plane is specified by an axis normal to its plane.
   #
   # ```
   # mirror_z = Symm32::Mirror.new(Axis::Z)
   # ```
-
   class Mirror
     include SymmBase::Isometry
     getter axis
@@ -39,8 +38,9 @@ module Symm32
       p_new
     end
 
-    # Allow the vectorlike to be "chiral" in that we give the additive inverse
-    # under reflection
+    # Reflect a [Vectorlike](https://crystal-symmetry.gitlab.io/symm_base/SymmBase/Vectorlike.html) object through the plane of the mirror.
+    #
+    # The `invert` argument allows the vectorlike to be "chiral" in that we give the additive inverse under reflection when `:chiral` is passed into this array.
     def transform(vectorlike : SymmBase::Vectorlike, invert = [] of Symbol)
       new_vec = @matrix * vectorlike
       if invert.includes? :chiral

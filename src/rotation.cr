@@ -1,6 +1,5 @@
 module Symm32
-  # The [rotation operation](https://en.wikipedia.org/wiki/Rotation_(mathematics%29)
-  #
+  # The [rotation operation](https://en.wikipedia.org/wiki/Rotation_(mathematics%29).
   class Rotation
     include SymmBase::Isometry
     getter angle : Float64
@@ -36,6 +35,7 @@ module Symm32
       p_new
     end
 
+    # Transform a [SymmBase::Vectorlike](https://crystal-symmetry.gitlab.io/symm_base/SymmBase/Vectorlike.html) object by rotating it around `axis` by `angle`.
     def transform(vectorlike : SymmBase::Vectorlike)
       @matrix * vectorlike
     end

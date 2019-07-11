@@ -22,13 +22,6 @@ require "symm32"
 
 This gives you access to `Symm32::POINT_GROUPS` an array of the 32 point groups, as well as a helper method for selecting a point group by name: `Symm32.point_group(name)`. Please see [the docs](https://crystal-symmetry.gitlab.io/symm32) for more details.
 
-## Examples
-
-For examples of this library in action, have a look at the [SymmSpecies](https://crystal-symmetry.gitlab.io/symm_species) shard or the following projects. If you'd like to add your project to this list please open an issue or submit a pull request (see **Contributing** below).
-
-* [Limit Groups](https://gitlab.com/crystal-symmetry/limit_groups)
-* [Hasse](https://gitlab.com/crystal-symmetry/hasse)
-
 ## Contributing
 
 Contributions are welcome! To get things started you can [open an issue](https://gitlab.com/crystal-symmetry/symm32/issues/new) and post a comment, correction, or feature request. From there we can talk about how best to incorporate (or not) your feedback.
@@ -47,4 +40,4 @@ But I recommend you start off by opening an issue so that you don't waste time o
 
 ## Contributors
 
-- [kcerb](https://gitlab.com/kcerb) KC Erb - creator, maintainer
+- [KCErb](https://gitlab.com/kcerb) KC Erb - creator, maintainer

@@ -8,6 +8,7 @@
 # match for the underlying math: there are only a finite set of possible
 # crystallographic axes.
 module Symm32
+  # :nodoc:
   alias Vector3 = SymmBase::Vector3
 
   # :nodoc:

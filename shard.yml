@@ -9,10 +9,9 @@ description: |
 
 dependencies:
   symm_base:
-    # gitlab: crystal-symmetry/symm_base
-    # version: 0.2.0
-    path: ../symm_base
+    gitlab: crystal-symmetry/symm_base
+    version: 1.0.0
 
-crystal: 0.27.0
+crystal: 0.29.0
 
 license: MIT

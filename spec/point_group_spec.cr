@@ -32,7 +32,7 @@ module Symm32
       end
 
       it "selects directions given axes and sorts by enum" do
-        axes = [Axis::D1, Axis::Z, Axis::ORIGIN]
+        axes = [Axis::D1, Axis::Z, Axis::Origin]
         pg2m.select_directions(axes).first.axis.should eq Axis::Z
       end
 

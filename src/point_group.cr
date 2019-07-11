@@ -108,9 +108,9 @@ module Symm32
     end
 
     private def init_directions
-      by_axis = isometries.group_by { |iso| iso.responds_to?(:axis) ? iso.axis : Axis::ORIGIN }
+      by_axis = isometries.group_by { |iso| iso.responds_to?(:axis) ? iso.axis : Axis::Origin }
       dirs = by_axis.compact_map do |axis, iso_arr|
-        next if axis == Axis::ORIGIN
+        next if axis == Axis::Origin
         Direction.new(axis, iso_arr)
       end
       dirs.sort_by(&.axis)

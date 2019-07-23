@@ -1,4 +1,4 @@
-image: "crystallang/crystal:latest"
+image: "crystallang/crystal:0.29.0"
 
 spec & format:
   script:
